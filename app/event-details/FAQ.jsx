@@ -21,67 +21,55 @@ export default function FAQ() {
     },
   ];
 
-  const [openIndex, setOpenIndex] = useState(null);
-
-  const toggle = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
+  const [openIndex, setOpenIndex] = useState(0);
 
   return (
-    <section className="bg-black text-white py-24 px-6">
-      <div className="max-w-5xl mx-auto">
-        {/* Heading */}
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-extrabold uppercase tracking-wider">
+    <section className="bg-black py-16 text-white sm:py-20">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl border-l border-white/20 pl-4">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.45em] text-white/40">
+            FAQ
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl">
             Frequently Asked Questions
           </h2>
-
-          <div className="w-28 h-1 bg-orange-500 rounded-full mx-auto mt-5"></div>
-
-          <p className="text-gray-400 mt-6">
-            Everything you need to know before entering the tournament.
+          <p className="mt-3 text-sm leading-7 text-white/55 sm:text-base">
+            Clear answers for teams and participants before the event begins.
           </p>
         </div>
 
-        {/* FAQ Cards */}
-        <div className="space-y-5">
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden transition-all duration-300 hover:border-orange-500"
-            >
-              {/* Question */}
-              <button
-                onClick={() => toggle(index)}
-                className="w-full flex justify-between items-center px-6 py-5 text-left"
-              >
-                <span className="text-lg font-semibold">
-                  {faq.question}
-                </span>
+        <div className="mt-10 divide-y divide-white/10 border border-white/10 bg-white/[0.03]">
+          {faqs.map((faq, index) => {
+            const open = openIndex === index;
 
-                <span
-                  className={`text-2xl text-orange-500 transition-transform duration-300 ${
-                    openIndex === index ? "rotate-45" : ""
+            return (
+              <div key={faq.question} className="px-5 py-4 sm:px-6">
+                <button
+                  onClick={() => setOpenIndex(open ? -1 : index)}
+                  className="flex w-full items-center justify-between gap-4 text-left"
+                >
+                  <span className="text-sm font-medium leading-6 text-white sm:text-base">
+                    {faq.question}
+                  </span>
+                  <span className="text-lg text-white/45">
+                    {open ? "-" : "+"}
+                  </span>
+                </button>
+
+                <div
+                  className={`grid overflow-hidden transition-all duration-300 ${
+                    open ? "grid-rows-[1fr] pt-3" : "grid-rows-[0fr]"
                   }`}
                 >
-                  +
-                </span>
-              </button>
-
-              {/* Answer */}
-              <div
-                className={`transition-all duration-300 overflow-hidden ${
-                  openIndex === index
-                    ? "max-h-40 opacity-100"
-                    : "max-h-0 opacity-0"
-                }`}
-              >
-                <div className="px-6 pb-6 text-gray-400 leading-7">
-                  {faq.answer}
+                  <div className="overflow-hidden">
+                    <p className="max-w-3xl text-sm leading-7 text-white/60 sm:text-[15px]">
+                      {faq.answer}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

@@ -20,6 +20,9 @@
 # production
 /build
 
+# allow public assets in source control
+!public/
+
 # misc
 .DS_Store
 *.pem

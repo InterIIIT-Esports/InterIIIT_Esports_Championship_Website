@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 
 export default function EventDetailsPage() {
   return (
-    <main>
+    <main className="overflow-x-hidden bg-slate-950 text-white">
       <Navbar />
       <Hero_event />
       <About />

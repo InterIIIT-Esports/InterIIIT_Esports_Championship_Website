@@ -2,49 +2,49 @@ import DeveloperCard from "./DeveloperCard";
 
 function DeveloperSection() {
   return (
-    <section className="w-full py-24 bg-black text-white">
-      <div className="max-w-7xl mx-auto px-6">
-
-        {/* Heading */}
-        <div className="text-center mb-20">
-          <h2 className="text-5xl font-extrabold uppercase tracking-wider">
-            Meet the Developers
+    <section className="w-full bg-black py-16 text-white sm:py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-left">
+          
+          <h2 className="mt-3 text-3xl font-semibold uppercase tracking-tight sm:text-4xl lg:text-5xl">
+            Developers
           </h2>
-
-          <div className="w-28 h-1 bg-red-500 rounded-full mx-auto mt-5"></div>
-
-          <p className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto">
-            The team behind the website, dedicated to delivering a seamless
-            esports experience.
+          <p className="mx-auto mt-4 max-w-7xl text-sm leading-7 text-slate-400 sm:text-base">
+            The people behind the website, focused on a clean and reliable event experience.
           </p>
         </div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+        <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+  <DeveloperCard
+    image="/developers/ankur.jpg"
+    name="Ankur Singh"
+    role="Frontend Developer"
+    quote="Building modern, responsive interfaces that create a seamless experience for every participant."
+    github="https://github.com/ankur"
+    linkedin="https://linkedin.com/in/ankur"
+    website="https://ankur.dev"
+  />
 
-          <DeveloperCard
-            image="/developers/ankur.jpg"
-            name="Ankur"
-            role="Frontend Developer"
-            quote="Great software is built by solving real problems, one feature at a time."
-          />
+  <DeveloperCard
+    image="/developers/Advik.jpeg"
+    name="Advik"
+    role="Frontend Developer"
+    quote="Focused on crafting intuitive UI and delivering pixel-perfect user experiences."
+    github="https://github.com/advik"
+    linkedin="https://linkedin.com/in/advik"
+    website=""
+  />
 
-          <DeveloperCard
-            image="/developers/advik.jpg"
-            name="Advik"
-            role="Frontend Developer"
-            quote="Creating intuitive interfaces that make every interaction simple and enjoyable."
-          />
-
-          <DeveloperCard
-            image="/developers/rahul.jpg"
-            name="Rahul"
-            role="Backend Developer"
-            quote="Clean code, scalable architecture, and continuous learning drive every project."
-          />
-
-        </div>
-
+  <DeveloperCard
+    image="/developers/rahul.jpg"
+    name="Rahul"
+    role="Backend Developer"
+    quote="Designing secure, scalable backend systems that keep the tournament running smoothly."
+    github="https://github.com/rahul"
+    linkedin="https://linkedin.com/in/rahul"
+    website=""
+  />
+</div>
       </div>
     </section>
   );
