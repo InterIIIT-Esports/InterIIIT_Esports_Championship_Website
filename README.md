@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div align="center">
+  <img src="./public/pan.jpg" alt="PUBG Pan" style="width: 150px; height: 150px; object-fit: cover; object-position: top;" />
+  <h1>🎮 InterIIIT Esports Championship</h1>
+  <p><em>The ultimate battleground for the finest gamers across all IIITs!</em></p>
+</div>
 
-## Getting Started
+<br />
 
-First, run the development server:
+##  What's this all about?
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Welcome to the **InterIIIT Esports Championship**! We're bringing together the most cracked players, clutch kings, and strategic masterminds from Indian Institutes of Information Technology (IIITs) all over the country for a high-stakes tournament. 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This repository powers the official web platform where all the magic happens:
+- **College Club Registration:** A smooth portal where your college's official esports club can drop in, register, and make their mark.
+- **Verification & Approval:** Our trusty admin dashboard to make sure every entry is 100% legit (no imposters allowed!).
+- **Event Management:** The core tools keeping the tournament running without a hitch, from managing rosters to overseeing the chaos.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+##  The Squad (Contributors)
 
-## Learn More
+A massive shoutout to the core dev squad who built this platform from scratch and keeps the servers from catching fire:
 
-To learn more about Next.js, take a look at the following resources:
+-  **Ankur** 
+-  **Rahul** 
+-  **Advik** 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Thanks for carrying the team and bringing the championship vision to life! GG WP.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+##  Help Directory (Grab a Medkit)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Stuck in the lobby? Getting some weird errors? Grab a medkit and check out our help directory below:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Environment Setup:** Can't get the local server running? Double-check your `.env.local` file! Make sure your MongoDB connection string and auth secrets are fully loaded before you ready up.
+- **Registration Status:** Is your college stuck on 'Pending'? Don't panic! It just means our admins are manually verifying your drop coordinates. Hang tight!
+- **Technical Support:** Found a bug? Site crashing? Ping **Ankur**, **Rahul**, or **Advik** directly. We'll investigate and deploy a hotfix ASAP.
+
+<br />
+
+<div align="center">
+  <sub>Built with ❤️ (and lots of caffeine) using Next.js & Tailwind CSS</sub>
+</div>
