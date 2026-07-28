@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { format } from "date-fns";
-import { Building2, Mail, Phone, MessageCircle, Briefcase, User, Globe, Calendar, CheckCircle, Edit, Save, X, Upload, ImageIcon } from "lucide-react";
+import { Building2, Mail, Phone, MessageCircle, Briefcase, User, Globe, Calendar, CheckCircle, Edit, Save, X, Upload, ImageIcon, ClipboardList, ExternalLink } from "lucide-react";
 import { FaInstagram } from "react-icons/fa";
 import { toast } from "sonner";
 import {
@@ -41,6 +41,7 @@ export default function RequestDetailsModal({ isOpen, onClose, request, currentU
         description: request.description || "",
         experience: request.experience || "",
         email_domain: request.email_domain || "",
+        intra_registration_form: request.intra_registration_form || "",
       });
       setIsEditing(false);
       setPendingLogoFile(null);
@@ -288,6 +289,14 @@ export default function RequestDetailsModal({ isOpen, onClose, request, currentU
                         ? <div className="flex-1 flex items-center gap-1"><span className="text-gray-400">@</span><input type="text" name="email_domain" value={formData.email_domain} onChange={handleChange} placeholder="college.ac.in" className={`${inputCls} flex-1`} /></div>
                         : request.email_domain
                           ? <span className="text-slate-700">@{request.email_domain}</span>
+                          : <span className="text-gray-400">—</span>}
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <ClipboardList size={14} className="text-orange-500 shrink-0" />
+                      {isEditing
+                        ? <input type="url" name="intra_registration_form" value={formData.intra_registration_form} onChange={handleChange} placeholder="https://forms.google.com/..." className={`${inputCls} flex-1`} />
+                        : request.intra_registration_form
+                          ? <a href={request.intra_registration_form} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-orange-600 hover:underline truncate"><span className="truncate">{request.intra_registration_form}</span><ExternalLink size={11} className="shrink-0" /></a>
                           : <span className="text-gray-400">—</span>}
                     </div>
                   </div>

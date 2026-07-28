@@ -80,44 +80,43 @@ export default async function HomeTeamSection() {
           </Link>
         </div>
 
-        {/* Mobile View: Avatar List */}
-        <div className="sm:hidden flex flex-col gap-6">
+        {/* Mobile View: Compact Avatar List */}
+        <div className="sm:hidden flex flex-col gap-2">
           {teamMembers.map((member) => (
-            <div key={member._id.toString()} className="flex items-center gap-5 bg-white p-4 rounded-[20px] shadow-sm border border-slate-100">
-              <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full ring-2 ring-slate-100">
-                <Image
-                  src={member.image_url}
-                  alt={member.name}
-                  fill
-                  sizes="80px"
-                  className="object-cover object-top"
-                />
-              </div>
-              <div className="flex flex-col justify-center min-w-0">
-                <h3 className="text-[16px] font-bold text-slate-900 truncate">
+            <div key={member._id.toString()} className="flex items-center gap-3 bg-white p-3 rounded-xl shadow-sm border border-slate-100">
+              <Image
+                src={member.image_url}
+                alt={member.name}
+                width={56}
+                height={56}
+                className="h-14 w-14 shrink-0 object-cover object-top ring-2 ring-slate-100"
+                style={{ borderRadius: '50%' }}
+              />
+              <div className="flex flex-1 flex-col justify-center min-w-0">
+                <h3 className="text-[14px] font-bold text-slate-900 truncate">
                   {member.name}
                 </h3>
-                <p className="text-[12px] font-medium text-slate-600 truncate mb-2">
+                <p className="text-[11px] font-medium text-slate-500 truncate">
                   {member.role || "Team Member"}
                 </p>
-                <div className="flex items-center gap-3">
-                  {member.linkedin && (
-                    <a href={member.linkedin} target="_blank" rel="noreferrer" className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 border border-slate-200 text-[#0a66c2] transition hover:bg-slate-100">
-                      <FaLinkedin size={13} />
-                    </a>
-                  )}
-                  {member.instagram && (
-                    <a href={member.instagram} target="_blank" rel="noreferrer" className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 border border-slate-200 text-[#e1306c] transition hover:bg-slate-100">
-                      <FaInstagram size={13} />
-                    </a>
-                  )}
-                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                {member.linkedin && (
+                  <a href={member.linkedin} target="_blank" rel="noreferrer" className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 border border-slate-200 text-[#0a66c2] transition hover:bg-slate-100">
+                    <FaLinkedin size={12} />
+                  </a>
+                )}
+                {member.instagram && (
+                  <a href={member.instagram} target="_blank" rel="noreferrer" className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 border border-slate-200 text-[#e1306c] transition hover:bg-slate-100">
+                    <FaInstagram size={12} />
+                  </a>
+                )}
               </div>
             </div>
           ))}
 
           {/* See More Button Mobile */}
-          <Link href="/iec-team" className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-md transition hover:bg-red-700">
+          <Link href="/iec-team" className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-3 text-sm font-bold uppercase tracking-wider text-white shadow-md transition hover:bg-red-700">
              View Full Team
              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </Link>

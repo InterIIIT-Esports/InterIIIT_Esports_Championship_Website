@@ -3,7 +3,7 @@ import { FaLinkedin, FaInstagram } from "react-icons/fa";
 
 export default function TeamCard({ member }) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-sm sm:rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] border border-slate-100 transition-all hover:shadow-lg hover:-translate-y-1">
+    <article className="group flex w-full flex-col overflow-hidden rounded-sm sm:rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] border border-slate-100 transition-all hover:shadow-lg hover:-translate-y-1">
       <div className="relative aspect-[4/5] w-full bg-slate-100 overflow-hidden">
         <Image
           src={member.image_url}
