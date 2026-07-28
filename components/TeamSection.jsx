@@ -62,7 +62,7 @@ export default async function TeamSection() {
           
         </div>
         
-        <div className=" md:space-y-24">
+        <div className="space-y-8 md:space-y-24">
           {departmentGroups.map((group) => (
             <div key={group.name} className="relative">
               

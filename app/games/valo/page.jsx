@@ -3,8 +3,6 @@ import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer";
 import GameOrganizers from "@/components/GameOrganisers";
 import GameLeaderboard from "@/components/GameLeaderboard";
-import GameRules from "@/components/GameRules";
-import GameFAQs from "@/components/GameFAQs";
 import { dbConnect } from "@/lib/mongodb";
 import IECTeamMember from "@/lib/models/IECTeamMember";
 
@@ -68,10 +66,6 @@ export default async function ValorantPage() {
       <GameLeaderboard title="Valorant Leaderboard" rows={valoLeaderboard} theme="red" />
       
       <GameOrganizers organizers={valoOrganizers} teamMembers={serializedMembers} theme="red" />
-      
-      <GameRules title="Valorant Rules & Regulations" theme="red" />
-      
-      <GameFAQs theme="red" />
       
       <Footer />
     </>

@@ -142,18 +142,7 @@ export default function HomeContactSection() {
               );
             })}
 
-            {/* Response Time Banner */}
-            <div className="mt-4 flex items-center gap-4 rounded-xl border border-red-100 bg-red-50/50 p-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded border border-red-100 bg-white text-red-500">
-                <Clock size={18} />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-slate-900">Average Response</h3>
-                <p className="text-xs font-medium text-slate-500 mt-0.5">
-                  Within <span className="font-bold text-red-600">24 hours</span>
-                </p>
-              </div>
-            </div>
+
           </div>
 
         </div>

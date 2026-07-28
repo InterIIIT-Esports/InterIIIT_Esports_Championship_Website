@@ -1,5 +1,9 @@
 <div align="center">
-  <img src="./public/pan.jpg" alt="PUBG Pan" width="180" />
+<!-- <<<<<<< HEAD
+  <img src="./public/pan.jpg" alt="PUBG Pan" width="180" /> -->
+=======
+  <img src="./public/pan.jpg" alt="PUBG Pan" style="width: 150px; height: 200px; object-fit: cover; object-position: center;" />
+>>>>>>> ui/improve
   <h1>🎮 InterIIIT Esports Championship</h1>
   <p><em>The ultimate battleground for the finest gamers across all IIITs!</em></p>
 </div>

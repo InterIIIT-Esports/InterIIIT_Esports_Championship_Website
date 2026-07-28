@@ -66,7 +66,10 @@ export default function HomeCollegesSection() {
                 key={college._id}
                 className="group flex flex-col items-center gap-2 sm:gap-3 p-2 sm:p-6 transition-all duration-300"
               >
-                <div className="flex h-14 w-14 sm:h-20 sm:w-20 rounded-full shrink-0 items-center justify-center overflow-hidden bg-white p-1.5 sm:p-2 shadow-sm ring-1 ring-white/10">
+                <div 
+                  className="flex h-14 w-14 sm:h-20 sm:w-20 shrink-0 items-center justify-center overflow-hidden bg-white p-1.5 sm:p-2 shadow-sm ring-1 ring-white/10"
+                  style={{ borderRadius: '50%', clipPath: 'circle(50%)' }}
+                >
                   {college.college_logo ? (
                     <Image
                       src={college.college_logo}
@@ -74,6 +77,7 @@ export default function HomeCollegesSection() {
                       width={80}
                       height={80}
                       className="h-full w-full object-contain"
+                      style={{ borderRadius: '50%' }}
                     />
                   ) : (
                     <Building2 size={24} className="text-slate-500" />

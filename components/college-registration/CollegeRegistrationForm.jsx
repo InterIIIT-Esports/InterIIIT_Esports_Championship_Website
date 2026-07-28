@@ -17,6 +17,7 @@ import {
   Upload,
   CheckCircle2,
   ArrowRight,
+  ClipboardList,
 } from "lucide-react";
 import { FaInstagram } from "react-icons/fa";
 
@@ -41,6 +42,7 @@ export default function CollegeRegistrationForm() {
     email_domain: "",
     description: "",
     experience: "",
+    intra_registration_form: "",
   });
 
   const [logoFile, setLogoFile] = useState(null);
@@ -401,6 +403,22 @@ export default function CollegeRegistrationForm() {
               placeholder="Any past tournaments organized or participated in?"
               className={`${inputClass} resize-none py-3 pl-4`}
             />
+          </div>
+
+          <div className="relative group">
+            <label className={labelClass}>Intra Registrations Form Link</label>
+            <p className="mb-2 text-[11px] text-gray-500">Provide a link to your college&apos;s internal registration form (e.g. Google Form) so students can register for your intra-college selections.</p>
+            <div className="relative">
+              <ClipboardList size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-red-500" />
+              <input
+                type="url"
+                name="intra_registration_form"
+                value={formData.intra_registration_form}
+                onChange={handleChange}
+                placeholder="https://forms.google.com/..."
+                className={inputClass}
+              />
+            </div>
           </div>
         </div>
       </div>

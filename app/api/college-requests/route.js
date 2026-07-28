@@ -26,6 +26,7 @@ export async function POST(req) {
     const description = formData.get("description")?.trim() || null;
     const experience = formData.get("experience")?.trim() || null;
     const email_domain = formData.get("email_domain")?.trim()?.toLowerCase();
+    const intra_registration_form = formData.get("intra_registration_form")?.trim() || "";
     const logoFile = formData.get("college_logo");
 
     // Validate required fields
@@ -113,6 +114,7 @@ export async function POST(req) {
       description,
       experience,
       email_domain,
+      intra_registration_form,
       status: "Pending",
     });
 

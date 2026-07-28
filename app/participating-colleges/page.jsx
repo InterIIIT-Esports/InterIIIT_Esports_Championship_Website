@@ -70,13 +70,13 @@ export default function ParticipatingCollegesPage() {
           </div>
 
           {loading ? (
-            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                <div key={i} className="h-48 animate-pulse rounded-xl bg-gray-100" />
+                <div key={i} className="h-36 sm:h-48 animate-pulse rounded-xl bg-gray-100" />
               ))}
             </div>
           ) : filteredColleges.length > 0 ? (
-            <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
               {filteredColleges.map((college) => (
                 <CollegeCard key={college._id} college={college} />
               ))}

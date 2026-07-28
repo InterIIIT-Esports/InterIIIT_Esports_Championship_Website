@@ -3,8 +3,6 @@ import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer";
 import GameOrganizers from "@/components/GameOrganisers";
 import GameLeaderboard from "@/components/GameLeaderboard";
-import GameRules from "@/components/GameRules";
-import GameFAQs from "@/components/GameFAQs";
 import { dbConnect } from "@/lib/mongodb";
 import IECTeamMember from "@/lib/models/IECTeamMember";
 
@@ -69,10 +67,6 @@ export default async function BGMIPage() {
       <GameLeaderboard title="BGMI Leaderboard" rows={bgmiLeaderboard} theme="amber" />
       
       <GameOrganizers organizers={bgmiOrganizers} teamMembers={serializedMembers} theme="amber" />
-      
-      <GameRules title="BGMI Rules & Regulations" theme="amber" />
-      
-      <GameFAQs theme="amber" />
       
       <Footer />
     </>

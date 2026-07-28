@@ -3,8 +3,6 @@ import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer";
 import GameOrganizers from "@/components/GameOrganisers";
 import GameLeaderboard from "@/components/GameLeaderboard";
-import GameRules from "@/components/GameRules";
-import GameFAQs from "@/components/GameFAQs";
 import { dbConnect } from "@/lib/mongodb";
 import IECTeamMember from "@/lib/models/IECTeamMember";
 
@@ -68,10 +66,6 @@ export default async function FFPage() {
       <GameLeaderboard title="Free Fire Leaderboard" rows={ffLeaderboard} theme="blue" />
       
       <GameOrganizers organizers={ffOrganizers} teamMembers={serializedMembers} theme="blue" />
-      
-      <GameRules title="Free Fire Rules & Regulations" theme="blue" />
-      
-      <GameFAQs theme="blue" />
       
       <Footer />
     </>

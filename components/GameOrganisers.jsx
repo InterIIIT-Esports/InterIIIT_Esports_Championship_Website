@@ -114,22 +114,22 @@ export default function GameOrganizers({ organizers = [], teamMembers = [], them
 
         {/* Team Members Grid */}
         {teamMembers && teamMembers.length > 0 && (
-          <div>
-            <div className="mb-8 border-t border-white/10 pt-8">
-              <h3 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
-                The Squad
-              </h3>
-              <p className="mt-2 text-sm text-white/55">
-                Meet the individuals managing the operations for this game.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {teamMembers.map((member) => (
-                <div key={member._id || member.name} className="flex">
-                  <TeamCard member={member} />
-                </div>
-              ))}
+          <div className="-mx-4 sm:-mx-6 lg:-mx-8 mt-10 bg-slate-50 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+            <div className="mx-auto max-w-7xl">
+              <div className="mb-6 sm:mb-8">
+                <h3 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+                  The Squad
+                </h3>
+                <p className="mt-1 text-sm text-slate-500">
+                  Meet the individuals managing the operations for this game.
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 sm:gap-4 md:grid-cols-5 lg:grid-cols-6">
+                {teamMembers.map((member) => (
+                  <TeamCard key={member._id || member.name} member={member} />
+                ))}
+              </div>
             </div>
           </div>
         )}
