@@ -35,8 +35,8 @@ export default function PrizePoolSection() {
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 text-left sm:text-center">
           <p className="text-xs tracking-[0.25em] uppercase text-slate-400 font-medium mb-1">Rewards</p>
-          <h2 className="text-4xl font-[family-name:var(--font-display)] leading-none tracking-wide text-white sm:text-6xl">
-            Prize Pool
+          <h2 className="text-4xl font-[family-name:var(--font-display)] leading-none tracking-wide text-white sm:text-6xl uppercase">
+            Prize <span className="text-red-600">Pool.</span>
           </h2>
           <p className="mt-3 max-w-xl text-xs text-slate-400 sm:mx-auto sm:text-sm">
             Compete for glory and walk away with massive cash prizes. The stakes have never been higher.

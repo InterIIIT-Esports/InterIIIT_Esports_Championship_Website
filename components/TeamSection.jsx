@@ -57,7 +57,7 @@ export default async function TeamSection() {
         <div className="mb-8 sm:mb-16 text-left">
           
           <h2 className="font-[family-name:var(--font-display)] text-3xl tracking-wide sm:text-5xl lg:text-6xl text-slate-900 uppercase leading-none">
-            Core Team
+            Core <span className="text-red-600">Team.</span>
           </h2>
           
         </div>

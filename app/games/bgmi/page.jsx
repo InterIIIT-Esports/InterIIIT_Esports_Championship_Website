@@ -32,6 +32,12 @@ const bgmiLeaderboard = [
   { rank: "02", team: "To be announced", played: "-", points: "-" },
   { rank: "03", team: "To be announced", played: "-", points: "-" },
   { rank: "04", team: "To be announced", played: "-", points: "-" },
+  { rank: "05", team: "To be announced", played: "-", points: "-" },
+  { rank: "06", team: "To be announced", played: "-", points: "-" },
+  { rank: "07", team: "To be announced", played: "-", points: "-" },
+  { rank: "08", team: "To be announced", played: "-", points: "-" },
+  { rank: "09", team: "To be announced", played: "-", points: "-" },
+  { rank: "10", team: "To be announced", played: "-", points: "-" },
 ];
 
 export default async function BGMIPage() {

@@ -21,7 +21,7 @@ export default async function HomeTeamSection() {
             Our Team
           </p> */}
           <h2 className="text-3xl font-[family-name:var(--font-display)] tracking-wide sm:text-4xl lg:text-6xl text-slate-900 uppercase leading-none">
-            Core Team
+            Core <span className="text-red-600">Team.</span>
           </h2>
           {/* <p className="mt-2 sm:mt-4 text-slate-500 text-[11px] sm:text-sm  font-semibold">
             Meet the people behind the championship
@@ -51,6 +51,11 @@ export default async function HomeTeamSection() {
 
               <div className="flex flex-col items-center p-4 pt-3 text-center">
                 <h3 className="text-[14px] font-bold text-[#0f172a] line-clamp-1">{member.name}</h3>
+                {member.college && (
+                  <span className="mt-1.5 inline-flex items-center rounded-md bg-red-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-red-600 ring-1 ring-inset ring-red-600/10">
+                    {member.college}
+                  </span>
+                )}
                 <div className="mt-3 flex gap-3 shrink-0">
                   {member.linkedin && (
                     <a href={member.linkedin} target="_blank" rel="noreferrer" className="text-[#0a66c2] hover:opacity-80 transition-opacity">
@@ -68,13 +73,49 @@ export default async function HomeTeamSection() {
           ))}
 
           {/* See More Card Desktop */}
-          <Link href="/iec-team" className="group flex flex-col justify-center items-center overflow-hidden rounded-[20px] bg-slate-100 border border-slate-200 border-dashed transition-all hover:bg-slate-200 hover:border-slate-300 min-h-[250px]">
-             <div className="flex flex-col items-center justify-center p-6 text-center">
-                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-white mb-4 group-hover:scale-110 transition-transform">
-                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <Link href="/iec-team" className="group flex flex-col justify-between overflow-hidden rounded-[20px] bg-white border border-slate-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] transition-all hover:shadow-lg hover:-translate-y-1 min-h-[250px] p-4 text-center">
+             {/* Card Stack Container */}
+             <div className="relative flex-1 flex items-center justify-center min-h-[160px]">
+                {allMembers.slice(5, 9).map((member, index) => {
+                   const stackStyles = [
+                     "rotate-[-12deg] -translate-x-6 translate-y-1 opacity-70 scale-90",
+                     "rotate-[-6deg] -translate-x-3 -translate-y-1 opacity-85 scale-95",
+                     "rotate-[6deg] translate-x-3 translate-y-2 opacity-90 scale-95",
+                     "rotate-0 z-10 shadow-lg scale-100 border-red-500/20"
+                   ];
+                   const styleClass = stackStyles[index] || "";
+                   return (
+                     <div
+                       key={member._id.toString()}
+                       className={`absolute w-[100px] h-[125px] bg-white rounded-xl border border-slate-200/60 overflow-hidden shadow-sm transition-all duration-300 group-hover:-translate-y-2 group-hover:scale-105 ${styleClass}`}
+                       style={{ zIndex: index }}
+                     >
+                       <div className="relative w-full h-[75%] bg-slate-50">
+                         <Image
+                           src={member.image_url}
+                           alt={member.name}
+                           fill
+                           sizes="100px"
+                           className="object-cover object-top"
+                         />
+                       </div>
+                       <div className="h-[25%] flex items-center justify-center p-1 bg-white border-t border-slate-100">
+                         <span className="text-[9px] font-bold text-slate-800 truncate block w-full text-center">
+                           {member.name.split(" ")[0]}
+                         </span>
+                       </div>
+                     </div>
+                   );
+                })}
+             </div>
+             
+             {/* Text Label */}
+             <div className="flex flex-col items-center gap-1.5 mt-2">
+                <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 group-hover:text-red-600 transition-colors">
+                   See Full Team
                 </span>
-                <span className="text-sm font-bold uppercase tracking-wider text-slate-900">
-                  See Full Team
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-200 text-slate-600 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
+                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </span>
              </div>
           </Link>
@@ -93,9 +134,16 @@ export default async function HomeTeamSection() {
                 style={{ borderRadius: '50%' }}
               />
               <div className="flex flex-1 flex-col justify-center min-w-0">
-                <h3 className="text-[14px] font-bold text-slate-900 truncate">
-                  {member.name}
-                </h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-[14px] font-bold text-slate-900 truncate">
+                    {member.name}
+                  </h3>
+                  {member.college && (
+                    <span className="shrink-0 inline-flex items-center rounded bg-red-50 px-1 py-0.2 text-[8px] font-bold uppercase tracking-wider text-red-600 ring-1 ring-inset ring-red-600/10">
+                      {member.college}
+                    </span>
+                  )}
+                </div>
                 <p className="text-[11px] font-medium text-slate-500 truncate">
                   {member.role || "Team Member"}
                 </p>

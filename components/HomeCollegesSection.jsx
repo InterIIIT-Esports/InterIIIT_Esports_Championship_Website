@@ -33,8 +33,8 @@ export default function HomeCollegesSection() {
           {/* <p className="text-[0.5rem] sm:text-xs tracking-[0.25em] uppercase text-red-500 font-medium">
             Our Colleges
           </p> */}
-          <h2 className="text-3xl md:text-6xl font-[family-name:var(--font-display)] tracking-wide text-white leading-none">
-            Participating Colleges
+          <h2 className="text-3xl md:text-6xl font-[family-name:var(--font-display)] tracking-wide text-white leading-none uppercase">
+            Participating <span className="text-red-600">Colleges.</span>
           </h2>
           <p className="mt-2 text-[11px] sm:text-sm text-slate-400">
             IIITs from across the nation competing for glory.

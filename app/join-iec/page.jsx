@@ -29,8 +29,8 @@ export default function JoinIECPage() {
 
         <div className="mx-auto w-full max-w-4xl flex-1 px-4 py-12 sm:px-6 lg:py-20">
           <div className="mb-10 text-center">
-            <h1 className="mb-3 text-3xl font-[family-name:var(--font-display)] tracking-wider text-white sm:text-5xl">
-              Join the IEC Team
+            <h1 className="mb-3 text-3xl font-[family-name:var(--font-display)] tracking-wider text-white sm:text-5xl uppercase">
+              Join The <span className="text-red-600">IEC Team.</span>
             </h1>
             <p className="mx-auto max-w-2xl text-sm font-medium text-gray-400 sm:text-base">
               Apply to be part of the organizing team behind India&apos;s largest Inter-IIIT Esports Championship.

@@ -49,8 +49,8 @@ export default function ParticipatingCollegesPage() {
         <div className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:py-20">
           <div className="mb-8 sm:mb-12 flex flex-col items-center justify-between gap-4 sm:gap-6 md:flex-row md:items-end">
             <div>
-              <h1 className="mb-2 sm:mb-3 text-3xl font-[family-name:var(--font-display)] tracking-wider text-slate-900 sm:text-5xl">
-                Participating Colleges
+              <h1 className="mb-2 sm:mb-3 text-3xl font-[family-name:var(--font-display)] tracking-wider text-slate-900 sm:text-5xl uppercase">
+                Participating <span className="text-red-600">Colleges.</span>
               </h1>
               <p className="max-w-2xl text-[13px] leading-relaxed font-medium text-gray-500 sm:text-base">
                 Discover the official esports clubs representing IIITs across India in the upcoming championship.

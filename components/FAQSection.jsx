@@ -82,8 +82,8 @@ export default function FAQSection() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-left mb-6 sm:mb-8">
           {/* <p className="text-[0.5rem] sm:text-xs tracking-[0.25em] uppercase text-slate-400 font-medium mb-1">Help</p> */}
-          <h2 className="text-3xl sm:text-6xl font-[family-name:var(--font-display)] tracking-wide text-white leading-none">
-            FAQ
+          <h2 className="text-3xl sm:text-6xl font-[family-name:var(--font-display)] tracking-wide text-white leading-none uppercase">
+            FAQ<span className="text-red-600">S.</span>
           </h2>
           {/* <p className="mt-2 text-[11px] sm:mt-3 sm:text-sm text-slate-400">
             Got questions? We&apos;ve got answers.
