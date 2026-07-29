@@ -1,5 +1,5 @@
 export default async function sitemap() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://iec-esports.in";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://esports.iiitiansnetwork.in";
 
   const routes = [
     "",
