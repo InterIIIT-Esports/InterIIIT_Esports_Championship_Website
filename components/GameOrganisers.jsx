@@ -45,8 +45,8 @@ export default function GameOrganizers({ organizers = [], teamMembers = [], them
             <p className={`text-[10px] font-semibold uppercase tracking-[0.45em] ${colors.label}`}>
               Partner Network
             </p>
-            <h2 className="mt-2 text-3xl font-[family-name:var(--font-display)] leading-none tracking-wide sm:text-5xl">
-              Game Organizers
+            <h2 className="mt-2 text-3xl font-[family-name:var(--font-display)] leading-none tracking-wide sm:text-5xl uppercase">
+              Game <span className={colors.label}>Organizers.</span>
             </h2>
           </div>
           <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/35">

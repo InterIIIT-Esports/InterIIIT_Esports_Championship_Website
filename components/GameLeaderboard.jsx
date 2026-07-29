@@ -53,6 +53,12 @@ export default function GameLeaderboard({ title = "Leaderboard", rows = [], them
     { rank: "02", team: "To be announced", played: "-", points: "-" },
     { rank: "03", team: "To be announced", played: "-", points: "-" },
     { rank: "04", team: "To be announced", played: "-", points: "-" },
+    { rank: "05", team: "To be announced", played: "-", points: "-" },
+    { rank: "06", team: "To be announced", played: "-", points: "-" },
+    { rank: "07", team: "To be announced", played: "-", points: "-" },
+    { rank: "08", team: "To be announced", played: "-", points: "-" },
+    { rank: "09", team: "To be announced", played: "-", points: "-" },
+    { rank: "10", team: "To be announced", played: "-", points: "-" },
   ];
 
   const items = rows.length ? rows : fallbackRows;
@@ -76,8 +82,8 @@ export default function GameLeaderboard({ title = "Leaderboard", rows = [], them
             <p className={`text-[10px] font-semibold uppercase tracking-[0.45em] ${colors.accent}`}>
               Standings
             </p>
-            <h2 className="mt-2 text-2xl font-[family-name:var(--font-display)] leading-none tracking-wide sm:text-4xl">
-              {title}
+            <h2 className="mt-2 text-2xl font-[family-name:var(--font-display)] leading-none tracking-wide sm:text-4xl uppercase">
+              {title.split(" ").slice(0, -1).join(" ")} <span className={colors.accent}>{title.split(" ").slice(-1)[0]}.</span>
             </h2>
           </div>
           <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.28em] text-white/35">

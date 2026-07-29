@@ -75,8 +75,8 @@ export default function GamesSection() {
         {/* Heading */}
         <div className="mb-10 flex items-start flex-col gap-1">
           <p className="text-[0.5rem] sm:text-xs tracking-[0.25em] uppercase text-slate-400 font-medium">Our Games</p>
-          <h2 className="text-3xl md:text-6xl font-[family-name:var(--font-display)] tracking-wide text-white leading-none">
-            Featured Games
+          <h2 className="text-3xl md:text-6xl font-[family-name:var(--font-display)] tracking-wide text-white leading-none uppercase">
+            Featured <span className="text-red-600">Games.</span>
           </h2>
           {/* <div className="mt-2 h-[2px] w-12 bg-red-600" /> */}
         </div>

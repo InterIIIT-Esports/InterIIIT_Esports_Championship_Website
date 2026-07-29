@@ -47,9 +47,11 @@ export default function TeamCard({ member }) {
         <h3 className="text-[10px] sm:text-[15px] font-bold text-[#0f172a] line-clamp-1">
           {member.name}
         </h3>
-        {/* <p className="mt-0.5 text-[11px] font-medium text-slate-500 uppercase line-clamp-1">
-          {member.college || "IIIT"}
-        </p> */}
+        {member.college && (
+          <span className="mt-1 inline-flex items-center rounded-md bg-red-50 px-1.5 py-0.5 text-[8px] sm:text-[10px] font-bold uppercase tracking-wider text-red-600 ring-1 ring-inset ring-red-600/10">
+            {member.college}
+          </span>
+        )}
       </div>
     </article>
   );

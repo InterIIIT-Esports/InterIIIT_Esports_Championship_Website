@@ -31,11 +31,14 @@ function Footer() {
               <a href="https://discord.gg/iiitiansnetwork" target="_blank" rel="noopener noreferrer" className="flex h-9 w-9 items-center justify-center border border-black/10 bg-slate-50 text-slate-500 transition hover:border-[#5865F2] hover:bg-[#5865F2] hover:text-white sm:h-10 sm:w-10">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
               </a>
-              <a href="https://www.youtube.com/@iiitiansnetwork" target="_blank" rel="noopener noreferrer" className="flex h-9 w-9 items-center justify-center border border-black/10 bg-slate-50 text-slate-500 transition hover:border-[#FF0000] hover:bg-[#FF0000] hover:text-white sm:h-10 sm:w-10">
+              <a href="https://www.youtube.com/c/IIITiansNetwork" target="_blank" rel="noopener noreferrer" className="flex h-9 w-9 items-center justify-center border border-black/10 bg-slate-50 text-slate-500 transition hover:border-[#FF0000] hover:bg-[#FF0000] hover:text-white sm:h-10 sm:w-10">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 7.1C2.5 5.5 3.8 4.2 5.4 4.2h13.2C20.2 4.2 21.5 5.5 21.5 7.1v9.8c0 1.6-1.3 2.9-2.9 2.9H5.4C3.8 19.8 2.5 18.5 2.5 16.9V7.1z"/><path d="M9.7 14.5l5.8-3.4-5.8-3.4v6.8z"/></svg>
               </a>
               <a href="https://x.com/iiitiansnetwork" target="_blank" rel="noopener noreferrer" className="flex h-9 w-9 items-center justify-center border border-black/10 bg-slate-50 text-slate-500 transition hover:border-[#1DA1F2] hover:bg-[#1DA1F2] hover:text-white sm:h-10 sm:w-10">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>
+              </a>
+              <a href="https://www.linkedin.com/company/53184003/" target="_blank" rel="noopener noreferrer" className="flex h-9 w-9 items-center justify-center border border-black/10 bg-slate-50 text-slate-500 transition hover:border-[#0A66C2] hover:bg-[#0A66C2] hover:text-white sm:h-10 sm:w-10">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
               </a>
             </div>
           </div>
@@ -134,7 +137,7 @@ function Footer() {
                   <a href="https://www.instagram.com/interiiit_esports" target="_blank" rel="noopener noreferrer" className="transition hover:text-slate-900">Instagram</a>
                 </li>
                 <li>
-                  <a href="https://www.youtube.com/@iiitiansnetwork" target="_blank" rel="noopener noreferrer" className="transition hover:text-slate-900">YouTube Stream</a>
+                  <a href="https://www.youtube.com/c/IIITiansNetwork" target="_blank" rel="noopener noreferrer" className="transition hover:text-slate-900">YouTube Stream</a>
                 </li>
                 <li>
                   <a href="https://x.com/iiitiansnetwork" target="_blank" rel="noopener noreferrer" className="transition hover:text-slate-900">Twitter / X</a>
@@ -166,6 +169,9 @@ function Footer() {
                 <li>
                   <Link href="/terms" className="transition hover:text-slate-900">Terms of Service</Link>
                 </li>
+                <li>
+                  <Link href="/sitemap-page" className="transition hover:text-slate-900">Sitemap</Link>
+                </li>
               </ul>
             </div>
 
@@ -176,12 +182,12 @@ function Footer() {
         <div className="mt-10 flex flex-col gap-3 border-t border-black/10 pt-6 text-xs font-medium text-slate-500 sm:mt-16 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:pt-8 sm:text-sm lg:mt-24">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-bold text-slate-900">IEC</span>
-            <span>&copy; {new Date().getFullYear()} Inter IIIT Esports. All rights reserved.</span>
+            <span>&copy; {new Date().getFullYear()} Inter IIIT Esports. Owned & organized by IIITians Network. All rights reserved.</span>
           </div>
           
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-            <p>Built by Ankur, Advik, and Rahul.</p>
-            <a href="mailto:support@iecesports.com" className="flex items-center gap-2 transition hover:text-slate-900">
+            <p>Built by <a href="https://www.linkedin.com/in/ankurrr27/" target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-900 transition-colors">Ankur</a>, <a href="https://www.linkedin.com/in/advik-saksena-08b997323/" target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-900 transition-colors">Advik</a>, and <a href="https://www.linkedin.com/in/rahul-tiwari-h0tmedusa/" target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-900 transition-colors">Rahul</a>.</p>
+            <a href="mailto:iiitiansnetwork@gmail.com" className="flex items-center gap-2 transition hover:text-slate-900">
               <Mail size={13} className="sm:h-auto sm:w-auto" />
               <span>Contact Us</span>
             </a>

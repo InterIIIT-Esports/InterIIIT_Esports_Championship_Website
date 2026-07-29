@@ -42,10 +42,9 @@ export default function About() {
               About the Event
             </p> */}
 
-            <h2 className="mt-4 sm:mt-6 max-w-xl text-3xl font-[family-name:var(--font-display)] tracking-wide sm:text-5xl lg:text-6xl text-slate-900 leading-[1.1]">
+            <h2 className="mt-4 sm:mt-6 max-w-xl text-3xl font-[family-name:var(--font-display)] tracking-wide sm:text-5xl lg:text-6xl text-slate-900 leading-[1.1] uppercase">
               The Ultimate 
-              
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-500"> Showdown.</span>
+              <span className="text-red-600"> Showdown.</span>
             </h2>
 
             <p className="mt-5 sm:mt-8 max-w-xl text-sm sm:text-base leading-relaxed text-slate-600 font-medium">

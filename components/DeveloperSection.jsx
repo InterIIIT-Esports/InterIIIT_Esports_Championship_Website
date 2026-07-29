@@ -37,8 +37,8 @@ function DeveloperSection() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             
-            <h2 className="font-[family-name:var(--font-display)] text-4xl leading-none tracking-wide text-white sm:text-6xl">
-              Contact The Developers
+            <h2 className="font-[family-name:var(--font-display)] text-4xl leading-none tracking-wide text-white sm:text-6xl uppercase">
+              Contact The <span className="text-red-600">Developers.</span>
             </h2>
           </div>
           <p className="max-w-md text-sm leading-6 text-slate-400">

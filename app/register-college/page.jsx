@@ -29,8 +29,8 @@ export default function RegisterCollegePage() {
 
         <div className="mx-auto w-full max-w-4xl flex-1 px-4 py-12 sm:px-6 lg:py-20">
           <div className="mb-10 text-center">
-            <h1 className="mb-3 text-3xl font-[family-name:var(--font-display)] tracking-wider text-white sm:text-5xl">
-              Register Your College
+            <h1 className="mb-3 text-3xl font-[family-name:var(--font-display)] tracking-wider text-white sm:text-5xl uppercase">
+              Register Your <span className="text-red-600">College.</span>
             </h1>
             <p className="mx-auto max-w-2xl text-sm font-medium text-gray-400 sm:text-base">
               Official clubs from participating IIITs must register their college for IEC.
