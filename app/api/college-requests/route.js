@@ -3,6 +3,8 @@ import CollegeRequest from "@/lib/models/CollegeRequest";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import { requireAdmin, requireStaff } from "@/lib/helpers/adminAuth";
 
+export const dynamic = "force-dynamic";
+
 /**
  * POST /api/college-requests
  * Create a new college registration request (public).

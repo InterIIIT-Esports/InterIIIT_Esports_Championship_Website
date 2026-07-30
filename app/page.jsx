@@ -11,6 +11,27 @@ import FAQSection from "@/components/FAQSection";
 import HomeCollegesSection from "@/components/HomeCollegesSection";
 import HomeContactSection from "@/components/HomeContactSection";
 
+export const metadata = {
+  title: "IEC Esports | Inter IIIT Esports Championship by IIITians Network",
+  description:
+    "Official website of IEC Esports, the Inter IIIT Esports Championship organized by IIITians Network. Explore participating IIIT colleges, team rosters, and player registration for BGMI, Valorant, and Free Fire.",
+  keywords: [
+    "IEC Esports",
+    "Inter IIIT Esports",
+    "IIITians Network esports",
+    "Inter IIIT esports championship",
+    "IIIT esports tournament",
+    "college esports India",
+    "BGMI Valorant Free Fire",
+    "IIIT esports event",
+    "Inter IIIT gaming",
+    "Inter IIIT championship",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+};
+
 const homeSlides = [
   { image: "/ff/11.png" },
   { image: "/valo/33.png" },
@@ -43,3 +64,4 @@ export default function Home() {
     </main>
   );
 }
+

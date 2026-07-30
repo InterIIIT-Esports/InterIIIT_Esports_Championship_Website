@@ -12,15 +12,15 @@ export default function TeamCard({ member }) {
           sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, 50vw"
           className="object-cover object-top transition duration-500 group-hover:scale-105 overflow-hidden"
         />
-        <div className="flex p-2 gap-1 sm:gap-2 shrink-0">
+        <div className="absolute left-2 top-2 z-20 flex gap-1.5 sm:left-3 sm:top-3 sm:gap-2">
           {member.linkedin && (
             <a
               href={member.linkedin}
               target="_blank"
               rel="noreferrer"
-              className="text-[#0a66c2] hover:opacity-80 transition-opacity bg-white/10 rounded-sm p-0.5 backdrop-blur-sm"
+              className="flex h-6 w-6 items-center justify-center text-[#0a66c2] transition-opacity hover:opacity-80 sm:h-8 sm:w-8"
             >
-              <FaLinkedin className="w-3 h-3 sm:w-5 sm:h-5" />
+              <FaLinkedin className="h-3 w-3 sm:h-4 sm:w-4" />
             </a>
           )}
           {member.instagram && (
@@ -28,9 +28,9 @@ export default function TeamCard({ member }) {
               href={member.instagram}
               target="_blank"
               rel="noreferrer"
-              className="text-[#e1306c] hover:opacity-80 transition-opacity bg-white/10 rounded-sm p-0.5 backdrop-blur-sm"
+              className="flex h-6 w-6 items-center justify-center text-[#e1306c] transition-opacity hover:opacity-80 sm:h-8 sm:w-8"
             >
-              <FaInstagram className="w-3 h-3 sm:w-5 sm:h-5" />
+              <FaInstagram className="h-3 w-3 sm:h-4 sm:w-4" />
             </a>
           )}
         </div>

@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { 
   Home, Calendar, Users, School, Gamepad2, Trophy, 
   UserPlus, HeadphonesIcon, FileText, Shield, Lock, 
@@ -7,7 +7,7 @@ import {
 
 export const metadata = {
   title: "Sitemap | Inter IIIT Esports Championship",
-  description: "Browse all pages of the Inter IIIT Esports Championship website — games, registration, teams, leaderboards, and more.",
+  description: "Browse all pages of the Inter IIIT Esports Championship website â€” games, registration, teams, leaderboards, and more.",
 };
 
 const sitemapSections = [
@@ -118,23 +118,10 @@ export default function SitemapPage() {
           ))}
         </div>
 
-        {/* XML Sitemap Link */}
-        <div className="mt-16 flex flex-col items-center border-t border-slate-200 pt-10 text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-3">
-            For Search Engines
-          </p>
-          <a
-            href="/sitemap.xml"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-5 py-2.5 text-xs font-semibold text-slate-700 transition hover:border-red-600 hover:text-red-600"
-          >
-            <FileText size={14} />
-            View XML Sitemap
-            <ChevronRight size={12} />
-          </a>
-        </div>
       </section>
     </main>
   );
 }
+
+
+

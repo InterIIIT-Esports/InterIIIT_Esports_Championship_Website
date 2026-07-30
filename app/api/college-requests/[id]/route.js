@@ -23,6 +23,9 @@ export async function GET(req, { params }) {
       );
     }
 
+    revalidatePath("/participating-colleges");
+    revalidatePath("/");
+
     return Response.json({ success: true, data: request });
   } catch (err) {
     const status = err.message.includes("Admin") || err.message.includes("Auth") ? 401 : 500;
@@ -91,6 +94,9 @@ export async function PATCH(req, { params }) {
         { status: 404 }
       );
     }
+
+    revalidatePath("/participating-colleges");
+    revalidatePath("/");
 
     return Response.json({ success: true, data: request });
   } catch (err) {

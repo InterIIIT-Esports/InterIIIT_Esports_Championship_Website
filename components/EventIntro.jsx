@@ -97,7 +97,7 @@ export default function EventIntro() {
                 Organised by{" "}
                 <strong>
                   <a
-                    href="https://iiitiansnetwork.com"
+                    href="https://iiitiansnetwork.in"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary hover:underline"
@@ -236,3 +236,4 @@ export default function EventIntro() {
     </section>
   );
 }
+
