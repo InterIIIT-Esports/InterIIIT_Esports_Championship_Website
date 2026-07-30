@@ -3,6 +3,7 @@ export default async function sitemap() {
 
   const routes = [
     "",
+    "/event-details",
     "/iec-team",
     "/join-iec",
     "/leaderboard",
@@ -14,12 +15,14 @@ export default async function sitemap() {
     "/games/bgmi",
     "/games/ff",
     "/games/valo",
-    "/event-details",
-    "/sitemap-page",
+    "/rules",
+    "/conduct",
+    "/privacy",
+    "/terms",
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
-    changeFrequency: "daily",
+    changeFrequency: route === "" ? "weekly" : "monthly",
     priority: route === "" ? 1.0 : 0.8,
   }));
 

@@ -13,16 +13,16 @@ const valoSlides = [
 
 const valoOrganizers = [
   {
-    club: "Clutch",
-    college: "IIIT Kota",
+    club: "Synergy IIIT Nagpur",
+    college: "IIIT Nagpur",
     leader: "Rahul Tiwari",
-    role: "Clutch Coordinator & Valorant Organiser",
+    role: "Synergy Organising Partner & Valorant Lead",
     game: "VALO",
     description:
-      "Official Valorant organizing partner handling match rooms, brackets, player coordination and dispute support.",
+      "Official Valorant organizing partner from IIIT Nagpur handling match rooms, brackets, player coordination and dispute support.",
     personImage: "/developers/rahul.jpg",
     networkLogo: "/logos/iiitians-network.png",
-    clubLogo: "/logos/clutch.jpg",
+    clubLogo: "/logos/synergy.png",
   },
 ];
 

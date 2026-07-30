@@ -5,7 +5,18 @@ import CollegeRegistrationForm from "@/components/college-registration/CollegeRe
 
 export const metadata = {
   title: "Register College | IEC Esports",
-  description: "Register your college for the Inter-IIIT Esports Championship",
+  description:
+    "Register your college esports club for IEC Esports, the Inter IIIT Esports Championship by IIITians Network.",
+  keywords: [
+    "register college esports",
+    "IIIT college registration",
+    "Inter IIIT esports college",
+    "IIITians Network college registration",
+    "college esports club registration",
+  ],
+  alternates: {
+    canonical: "/register-college",
+  },
 };
 
 export default function RegisterCollegePage() {

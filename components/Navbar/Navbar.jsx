@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -88,32 +88,42 @@ export default function Navbar() {
     <>
     <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 h-[64px] sm:h-14 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-3">
-          <Image
-            src="/logos/iiitians-network.png"
-            alt="IIITians Network"
-            width={120}
-            height={48}
-            className="h-5 w-auto opacity-95 sm:h-9"
-            priority
-          />
-          <span className="opacity-50">|</span>
-          <Image
-            src="/logos/IEC LOGO Black.png"
-            alt="IEC"
-            width={88}
-            height={88}
-            className="h-9 w-auto invert opacity-95 sm:h-15"
-            priority
-          />
+        <div className="flex items-center gap-3">
+          <a
+            href="https://iiitiansnetwork.in"
 
-          <div className="hidden sm:block">
-            <h1 className="text-sm font-semibold tracking-[0.1em] text-white">
-              INTER IIIT
-            </h1>
-            <p className="text-[10px] text-slate-100">Esports Championship</p>
-          </div>
-        </Link>
+
+            aria-label="Open IIITians Network website"
+            className="flex items-center"
+          >
+            <Image
+              src="/logos/iiitians-network.png"
+              alt="IIITians Network"
+              width={120}
+              height={48}
+              className="h-5 w-auto opacity-95 sm:h-9"
+              priority
+            />
+          </a>
+          <span className="opacity-50">|</span>
+          <Link href="/" className="flex items-center gap-3">
+            <Image
+              src="/logos/IEC LOGO Black.png"
+              alt="IEC"
+              width={88}
+              height={88}
+              className="h-9 w-auto invert opacity-95 sm:h-15"
+              priority
+            />
+
+            <div className="hidden sm:block">
+              <h1 className="text-sm font-semibold tracking-[0.1em] text-white">
+                INTER IIIT
+              </h1>
+              <p className="text-[10px] text-slate-100">Esports Championship</p>
+            </div>
+          </Link>
+        </div>
 
         <div className="hidden items-center gap-8 lg:flex">
           <div className="flex items-center gap-6">
@@ -121,7 +131,7 @@ export default function Navbar() {
               <Link
                 key={item.name}
                 href={item.href === "/team" ? teamHref : item.href}
-                className="text-[11px] font-semibold tracking-[0.22em] text-slate-300 transition hover:text-white"
+                className="text-[11px] font-semibold  text-slate-300 transition hover:text-white"
               >
                 {item.name}
               </Link>
@@ -262,3 +272,4 @@ export default function Navbar() {
     </>
   );
 }
+

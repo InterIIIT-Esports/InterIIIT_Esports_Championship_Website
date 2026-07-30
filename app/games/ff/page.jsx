@@ -16,10 +16,10 @@ const ffOrganizers = [
     club: "Sports Club IIIT Kalyani",
     college: "IIIT Kalyani",
     leader: "Advik Mukherjee",
-    role: "Community Partner & Free Fire Organiser",
+    role: "Sports Club Community Partner & Free Fire Lead",
     game: "FF",
     description:
-      "Responsible for Free Fire operations, player coordination, lobby flow and match-day support.",
+      "Official Free Fire operations partner from IIIT Kalyani handling player coordination, lobby flow and match-day support.",
     personImage: "/developers/Advik.jpeg",
     networkLogo: "/logos/iiitians-network.png",
     clubLogo: "/logos/SportsClubKalyani.jpg",

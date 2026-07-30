@@ -122,6 +122,10 @@ export default function RegisterCard() {
         </div>
 
         <div className="flex flex-1 flex-col">
+          <div className="mb-4 rounded-lg border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-xs leading-relaxed text-amber-700 sm:text-sm">
+            This page is for the intra phase of the championship.
+            For your college-specific registration link, please visit the <Link href="/participating-colleges" className="font-semibold underline underline-offset-4 hover:text-amber-900">Colleges</Link> section.
+          </div>
           <div className="space-y-3">
             <div className="relative group">
               <User size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-red-500" />

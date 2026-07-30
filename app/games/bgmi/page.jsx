@@ -14,13 +14,13 @@ const bgmiSlides = [
 
 const bgmiOrganizers = [
   {
-    club: "Clutch",
+    club: "Clutch IIIT Kota",
     college: "IIIT Kota",
     leader: "Rahul Tiwari",
-    role: "Clutch Coordinator & BGMI Organiser",
+    role: "Clutch Organising Partner & BGMI Lead",
     game: "BGMI",
     description:
-      "Official BGMI organizing partner responsible for tournament operations, player coordination, scheduling and match management.",
+      "Official BGMI organizing partner from IIIT Kota handling tournament operations, player coordination, scheduling and match management.",
     personImage: "/developers/rahul.jpg",
     networkLogo: "/logos/iiitians-network.png",
     clubLogo: "/logos/clutch.jpg",

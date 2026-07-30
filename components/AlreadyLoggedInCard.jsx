@@ -92,6 +92,10 @@ export default function AlreadyLoggedInCard() {
         </div>
 
         {/* User Details */}
+        <div className="mb-4 rounded-lg border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-xs leading-relaxed text-amber-300 sm:text-sm">
+          This page is for the inter phase of the championship.
+          For college-specific registration links, visit the <a href="/participating-colleges" className="font-semibold underline underline-offset-4 hover:text-amber-200">Colleges</a> section.
+        </div>
         <div className="flex-1 space-y-3">
           <div className="rounded-lg border border-white/10 bg-white/[0.03] p-4 relative">
             {!isEditing ? (

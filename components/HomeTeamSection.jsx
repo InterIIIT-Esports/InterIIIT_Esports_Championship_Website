@@ -40,6 +40,28 @@ export default async function HomeTeamSection() {
                   sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 50vw"
                   className="object-cover object-top transition duration-500 group-hover:scale-105"
                 />
+                <div className="absolute left-3 top-3 z-20 flex gap-2">
+                  {member.linkedin && (
+                    <a
+                      href={member.linkedin}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex h-7 w-7 items-center justify-center text-[#0a66c2] transition-opacity hover:opacity-80"
+                    >
+                      <FaLinkedin size={14} />
+                    </a>
+                  )}
+                  {member.instagram && (
+                    <a
+                      href={member.instagram}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex h-7 w-7 items-center justify-center text-[#e1306c] transition-opacity hover:opacity-80"
+                    >
+                      <FaInstagram size={14} />
+                    </a>
+                  )}
+                </div>
                 <div className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                 
                 <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
@@ -56,18 +78,6 @@ export default async function HomeTeamSection() {
                     {member.college}
                   </span>
                 )}
-                <div className="mt-3 flex gap-3 shrink-0">
-                  {member.linkedin && (
-                    <a href={member.linkedin} target="_blank" rel="noreferrer" className="text-[#0a66c2] hover:opacity-80 transition-opacity">
-                      <FaLinkedin size={16} />
-                    </a>
-                  )}
-                  {member.instagram && (
-                    <a href={member.instagram} target="_blank" rel="noreferrer" className="text-[#e1306c] hover:opacity-80 transition-opacity">
-                      <FaInstagram size={16} />
-                    </a>
-                  )}
-                </div>
               </div>
             </article>
           ))}

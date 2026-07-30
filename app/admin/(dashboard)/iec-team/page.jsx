@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -26,7 +26,7 @@ export default function IECTeamAdminPage() {
   const [appsLoading, setAppsLoading] = useState(false);
   const [appFilter, setAppFilter] = useState("PENDING");
 
-  const [form, setForm] = useState({ name: "", role: "", instagram: "", linkedin: "", order: 0, departments: [] });
+  const [form, setForm] = useState({ name: "", role: "", college: "", instagram: "", linkedin: "", order: 0, departments: [] });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
@@ -34,7 +34,7 @@ export default function IECTeamAdminPage() {
 
   const [editImageFile, setEditImageFile] = useState(null);
   const [editImagePreview, setEditImagePreview] = useState(null);
-  const [editForm, setEditForm] = useState({ name: "", role: "", instagram: "", linkedin: "", order: 0, departments: [] });
+  const [editForm, setEditForm] = useState({ name: "", role: "", college: "", instagram: "", linkedin: "", order: 0, departments: [] });
 
   useEffect(() => {
     const t = localStorage.getItem("token");
@@ -108,6 +108,7 @@ export default function IECTeamAdminPage() {
     setEditForm({
       name: member.name,
       role: member.role,
+      college: member.college || "",
       instagram: member.instagram || "",
       linkedin: member.linkedin || "",
       order: member.order || 0,
@@ -134,6 +135,7 @@ export default function IECTeamAdminPage() {
     const formData = new FormData();
     formData.append("name", form.name);
     formData.append("role", form.role);
+    formData.append("college", form.college);
     formData.append("instagram", form.instagram);
     formData.append("linkedin", form.linkedin);
     formData.append("order", form.order);
@@ -149,7 +151,7 @@ export default function IECTeamAdminPage() {
       if (data.success) {
         toast.success("Member added");
         setShowAdd(false);
-        setForm({ name: "", role: "", instagram: "", linkedin: "", order: 0, departments: [] });
+        setForm({ name: "", role: "", college: "", instagram: "", linkedin: "", order: 0, departments: [] });
         setImageFile(null); setImagePreview(null);
         await fetchMembers();
         router.refresh();
@@ -164,6 +166,7 @@ export default function IECTeamAdminPage() {
     const formData = new FormData();
     formData.append("name", editForm.name);
     formData.append("role", editForm.role);
+    formData.append("college", editForm.college);
     formData.append("instagram", editForm.instagram);
     formData.append("linkedin", editForm.linkedin);
     formData.append("order", editForm.order);
@@ -175,15 +178,20 @@ export default function IECTeamAdminPage() {
         headers: { Authorization: `Bearer ${token}` },
         body: formData
       });
-      const data = await res.json();
-      if (data.success) {
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.success) {
         toast.success("Member updated");
+        setMembers((prev) => prev.map((member) => member._id === data.member._id ? data.member : member));
         setEditTarget(null);
         setEditImageFile(null);
         await fetchMembers();
         router.refresh();
-      } else toast.error(data.error);
-    } catch { toast.error("Failed to update member"); }
+      } else {
+        toast.error(data.error || "Failed to update member");
+      }
+    } catch (err) {
+      toast.error(err.message || "Failed to update member");
+    }
     finally { setSubmitting(false); }
   };
 
@@ -249,10 +257,10 @@ export default function IECTeamAdminPage() {
 
   const renderMemberModal = ({ title, onSubmit, imgPreview, onImgChange, imgRef, form: f, setForm: sf, isEdit, onClose }) => (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-6 shadow-2xl">
+      <div className="max-h-[90dvh] w-full max-w-md overflow-y-auto rounded-xl border border-gray-200 bg-white p-6 shadow-2xl">
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">{title}</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-slate-900 text-xs">✕ Close</button>
+          <button onClick={onClose} className="text-gray-400 hover:text-slate-900 text-xs">âœ• Close</button>
         </div>
         <form onSubmit={onSubmit} className="space-y-3">
           {/* Image picker */}
@@ -276,6 +284,7 @@ export default function IECTeamAdminPage() {
 
           <div><label className={labelCls}>Name *</label><input required type="text" placeholder="Full name" value={f.name} onChange={e => sf({...f, name: e.target.value})} className={inputCls} /></div>
           <div><label className={labelCls}>Role *</label><input required type="text" placeholder="e.g. Lead Organizer" value={f.role} onChange={e => sf({...f, role: e.target.value})} className={inputCls} /></div>
+          <div><label className={labelCls}>College</label><input type="text" placeholder="e.g. IIIT Hyderabad" value={f.college || ""} onChange={e => sf({...f, college: e.target.value})} className={inputCls} /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><label className={labelCls}>Instagram URL</label><input type="text" placeholder="https://instagram.com/..." value={f.instagram} onChange={e => sf({...f, instagram: e.target.value})} className={inputCls} /></div>
             <div><label className={labelCls}>LinkedIn URL</label><input type="text" placeholder="https://linkedin.com/..." value={f.linkedin} onChange={e => sf({...f, linkedin: e.target.value})} className={inputCls} /></div>
@@ -373,7 +382,7 @@ export default function IECTeamAdminPage() {
         </p>
       </div>
 
-      {/* ══════ CURRENT TEAM TAB ══════ */}
+      {/* â•â•â•â•â•â• CURRENT TEAM TAB â•â•â•â•â•â• */}
       {activeTab === "team" && (<>
 
       {isReordering && (
@@ -411,7 +420,7 @@ export default function IECTeamAdminPage() {
               onDrop={() => handleReorderDrop(member)}
               className={`relative group bg-white border border-gray-200 rounded-xl overflow-hidden p-4 text-center hover:border-gray-300 shadow-sm transition-all ${isReordering ? "cursor-grab" : ""}`}
             >
-              {/* Action buttons — appear on hover */}
+              {/* Action buttons â€” appear on hover */}
               <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
                 <button
                   onClick={() => openEdit(member)}
@@ -434,13 +443,14 @@ export default function IECTeamAdminPage() {
               </div>
               <p className="font-bold text-slate-900 text-sm leading-tight truncate">{member.name}</p>
               <p className="text-red-600 text-[10px] font-semibold mt-0.5 truncate">{member.role}</p>
+              {member.college && <p className="mt-1 text-[9px] font-medium uppercase tracking-wider text-gray-400 truncate">{member.college}</p>}
             </div>
           ))}
         </div>
       )}
       </>)}
 
-      {/* ══════ APPLICATIONS TAB ══════ */}
+      {/* â•â•â•â•â•â• APPLICATIONS TAB â•â•â•â•â•â• */}
       {activeTab === "applications" && (
         <>
           {/* Filter pills */}
@@ -548,7 +558,7 @@ export default function IECTeamAdminPage() {
 
       {/* Edit Member Modal */}
       {editTarget && renderMemberModal({
-        title: `Edit — ${editTarget.name}`,
+        title: `Edit â€” ${editTarget.name}`,
         onSubmit: handleEditSubmit,
         imgPreview: editImagePreview,
         onImgChange: handleEditImageChange,
@@ -561,3 +571,4 @@ export default function IECTeamAdminPage() {
     </div>
   );
 }
+
