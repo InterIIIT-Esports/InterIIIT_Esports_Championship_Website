@@ -24,6 +24,10 @@ const bgmiOrganizers = [
     personImage: "/developers/rahul.jpg",
     networkLogo: "/logos/iiitians-network.png",
     clubLogo: "/logos/clutch.jpg",
+    email: "clutch.iiitkota@gmail.com",
+    social: {
+      instagram: "https://www.instagram.com/clutch_iiitkota/",
+    },
   },
 ];
 

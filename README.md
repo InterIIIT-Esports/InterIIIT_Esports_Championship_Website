@@ -1,12 +1,9 @@
 <div align="center">
-<!-- <<<<<<< HEAD
-  <img src="./public/pan.jpg" alt="PUBG Pan" width="180" /> -->
-=======
-  <img src="./public/pan.jpg" alt="PUBG Pan" style="width: 150px; height: 200px; object-fit: cover; object-position: center;" />
->>>>>>> ui/improve
+  <img src="./public/InstaBanner.png" alt="InterIIIT Esports Championship banner" style="width: 100%; max-width: 900px; border-radius: 16px;" />
   <h1>🎮 InterIIIT Esports Championship</h1>
-  <p><em>The ultimate battleground for the finest gamers across all IIITs!</em></p>
+ 
 </div>
+
 <br />
 
 ##  What's this all about?
@@ -43,5 +40,5 @@ Stuck in the lobby? Getting some weird errors? Grab a medkit and check out our h
 <br />
 
 <div align="center">
-  <sub>Built with ❤️ (and lots of caffeine) using Next.js & Tailwind CSS</sub>
+  <p><strong>Let the games begin.</strong></p>
 </div>
