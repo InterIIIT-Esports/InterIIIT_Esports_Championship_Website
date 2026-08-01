@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./public/pan.jpg" alt="PUBG Pan" style="width: 150px; height: 200px; object-fit: cover; object-position: center;" />
+  <img src="./public/InstaBanner.png" alt="InterIIIT Esports Championship banner" style="width: 100%; max-width: 900px; border-radius: 16px;" />
   <h1>🎮 InterIIIT Esports Championship</h1>
  
 </div>
