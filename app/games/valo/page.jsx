@@ -23,6 +23,10 @@ const valoOrganizers = [
     personImage: "/developers/rahul.jpg",
     networkLogo: "/logos/iiitians-network.png",
     clubLogo: "/logos/synergy.png",
+    email: "synergy.iiitnagpur@gmail.com",
+    social: {
+      instagram: "https://www.instagram.com/synergy.iiitn/",
+    },
   },
 ];
 

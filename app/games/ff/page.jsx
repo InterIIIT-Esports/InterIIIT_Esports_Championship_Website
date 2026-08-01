@@ -23,6 +23,11 @@ const ffOrganizers = [
     personImage: "/developers/Advik.jpeg",
     networkLogo: "/logos/iiitians-network.png",
     clubLogo: "/logos/SportsClubKalyani.jpg",
+    email: "sportsiiitkalyani@gmail.com",
+    social: {
+      instagram: "https://www.instagram.com/sports_iiitkalyani",
+      discord: "https://discord.gg/KvXd8HMQWc",
+    },
   },
 ];
 
