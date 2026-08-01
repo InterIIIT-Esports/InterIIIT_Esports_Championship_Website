@@ -1,33 +1,43 @@
 <div align="center">
-  <img src="./public/InstaBanner.png" alt="InterIIIT Esports Championship banner" style="width: 100%; max-width: 900px; border-radius: 16px;" />
+  <img src="./public/pan.jpg" alt="PUBG Pan" style="width: 150px; height: 200px; object-fit: cover; object-position: center;" />
   <h1>🎮 InterIIIT Esports Championship</h1>
  
 </div>
 
-## About the Event
+<br />
 
-The InterIIIT Esports Championship is where the brightest gaming talent from IIITs across India comes together for an unforgettable showdown. It is more than just a tournament — it is a platform for teams to compete, connect, and represent their colleges with passion.
+##  What's this all about?
 
-From intense matches to unforgettable moments, this event brings together:
+Welcome to the **InterIIIT Esports Championship**! We're bringing together the most cracked players, clutch kings, and strategic masterminds from Indian Institutes of Information Technology (IIITs) all over the country for a high-stakes tournament. 
 
-- Competitive gaming at its best
-- A vibrant community of student players and supporters
-- The energy of college pride and friendly rivalry
-- A chance to shine on a national stage
-
-## What to Expect
-
-Expect fast-paced action, high-level strategy, and the kind of excitement that turns every match into a story worth talking about. Whether you are playing, cheering, or simply soaking in the atmosphere, this event is designed to be thrilling from start to finish.
-
-## Why It Matters
-
-The championship is a celebration of talent, teamwork, and the growing esports culture in Indian institutions. It gives players a chance to showcase their skills while bringing together campus communities through a shared love for gaming.
-
-## Join the Action
-
-Be part of the competition, support your college, and experience the spirit of esports at its finest. The stage is set — all that remains is the excitement of the game.
+This repository powers the official web platform where all the magic happens:
+- **College Club Registration:** A smooth portal where your college's official esports club can drop in, register, and make their mark.
+- **Verification & Approval:** Our trusty admin dashboard to make sure every entry is 100% legit (no imposters allowed!).
+- **Event Management:** The core tools keeping the tournament running without a hitch, from managing rosters to overseeing the chaos.
 
 ---
+
+##  The Squad (Contributors)
+
+A massive shoutout to the core dev squad who built this platform from scratch and keeps the servers from catching fire:
+
+-  **Ankur** 
+-  **Rahul** 
+-  **Advik** 
+
+Thanks for carrying the team and bringing the championship vision to life! GG WP.
+
+---
+
+##  Help Directory (Grab a Medkit)
+
+Stuck in the lobby? Getting some weird errors? Grab a medkit and check out our help directory below:
+
+- **Environment Setup:** Can't get the local server running? Double-check your `.env.local` file! Make sure your MongoDB connection string and auth secrets are fully loaded before you ready up.
+- **Registration Status:** Is your college stuck on 'Pending'? Don't panic! It just means our admins are manually verifying your drop coordinates. Hang tight!
+- **Technical Support:** Found a bug? Site crashing? Ping **Ankur**, **Rahul**, or **Advik** directly. We'll investigate and deploy a hotfix ASAP.
+
+<br />
 
 <div align="center">
   <p><strong>Let the games begin.</strong></p>
