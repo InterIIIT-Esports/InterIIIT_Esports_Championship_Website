@@ -8,72 +8,112 @@ export default function FAQSection() {
 
   const faqs = [
     {
+      question: "How to participate in the Intra stage of tournament",
+      answer: (
+        <>
+          Visit our{" "}
+          <a
+            href="/participating-colleges"
+            className="text-primary underline hover:no-underline"
+          >
+            Participating Colleges
+          </a>{" "}
+          page. Find your college card and click on the{" "}
+          <strong>Intra Registration</strong> Google Form link. Fill out and
+          submit the form to register for your college's Intra Qualifiers.
+        </>
+      ),
+    },
+    {
+  question: "What is the use of Register Your Team on this website?",
+  answer: (
+    <>
+      The <strong>Register Your Team</strong> page is only for teams that have
+      successfully qualified through their college's Intra Qualifiers. Once
+      your team qualifies, you must register here to participate in the next
+      stage of the tournament. This registration will be used to manage your
+      team's participation, provide access to the real-time leaderboard and
+      rankings, and ensure a smooth tournament experience throughout the
+      remaining stages.
+    </>
+  ),
+},
+    {
       question: "Who can participate in the tournament?",
-      answer: "The tournament is strictly for college students currently enrolled in any IIIT across India. Furthermore, your IIIT must be officially registered and approved on our platform. You will need to verify your student status using your official college email ID.",
+      answer:
+        "The tournament is strictly for college students currently enrolled in any IIIT across India. Furthermore, your IIIT must be officially registered and approved on our platform. You will need to verify your student status using your official college email ID.",
     },
     {
       question: "Can I participate in multiple games?",
-      answer: "No. A single user can only join and play for ONE team. Furthermore, a single team can only register and participate in ONE game. If you wish to play a different game, you must leave or delete your current team and join another one.",
+      answer:
+        "No. A single user can only join and play for ONE team. Furthermore, a single team can only register and participate in ONE game. If you wish to play a different game, you must leave or delete your current team and join another one.",
     },
     {
       question: "My college is not registered. How do I register my college?",
-      answer: "If your college is not on the participating list, a representative from your official college esports club (or a student coordinator) must visit the 'College Registration' page on our website, fill out the details, and wait for admin approval.",
+      answer:
+        "If your college is not on the participating list, a representative from your official college esports club (or a student coordinator) must visit the 'College Registration' page on our website, fill out the details, and wait for admin approval.",
     },
     {
       question: "Is there any registration fee?",
-      answer: "No, participation in the Inter-IIIT Esports League is completely free of charge.",
+      answer:
+        "No, participation in the Inter-IIIT Esports League is completely free of charge.",
     },
     {
-      question: "What is the format of the tournament?",
-      answer: "The tournament consists of online qualifiers followed by semi-finals and a grand finale. Specific formats vary by game and will be announced on the official Discord server.",
-    },
+  question: "What is the format of the tournament?",
+  answer:
+    "The tournament consists of three stages. First, each participating IIIT conducts its own Intra Qualifiers to determine the top teams from the college. These qualified teams then advance to the Inter IIIT Stage, where they compete against teams from other IIITs. The highest-performing teams from the Inter IIIT Stage qualify for the Grand Finals, where they battle to become the Inter IIIT Esports Champions.",
+},
     {
       question: "Do I need to be in the same college as my teammates?",
-      answer: "Yes, all team members must be enrolled in the same IIIT to represent their college. Mixed-college teams are not permitted.",
+      answer:
+        "Yes, all team members must be enrolled in the same IIIT to represent their college. Mixed-college teams are not permitted.",
     },
-    {
-      question: "How are the prize pools distributed?",
-      answer: "Prize pools will be distributed among the top 3 teams for each game. The specific breakdown will be shared on our Discord server before the semi-finals.",
-    },
-    {
-      question: "How do I join the official Discord server?",
-      answer: "Once your team is registered and verified, the official Discord link will be available on your team dashboard and sent to your registered email.",
-    },
+
     {
       question: "Are emulators allowed for mobile games?",
-      answer: "No, emulators are strictly prohibited for BGMI and Free Fire. Any player found using an emulator will result in immediate disqualification of their entire team.",
+      answer:
+        "No, emulators are strictly prohibited for BGMI and Free Fire. Any player found using an emulator will result in immediate disqualification of their entire team.",
     },
     {
       question: "Can we change our team roster after registration?",
-      answer: "Rosters can be modified only before the registration deadline. Once the tournament brackets are locked, no roster changes or substitutions are allowed.",
+      answer:
+        "Rosters can be modified only before the registration deadline. Once the tournament brackets are locked, no roster changes or substitutions are allowed.",
     },
     {
       question: "What happens if a player disconnects during a match?",
-      answer: "If a player disconnects, the game will be paused (if the game supports it) for a maximum of 10 minutes. If the player cannot reconnect within the allotted time, the team must continue playing shorthanded.",
+      answer:
+        "If a player disconnects, the game will be paused (if the game supports it) for a maximum of 10 minutes. If the player cannot reconnect within the allotted time, the team must continue playing shorthanded.",
     },
     {
       question: "Do we need to stream or record our matches?",
-      answer: "Recording is not mandatory for early qualifiers, but semi-finals and finals may require at least one player from each team to record their POV for fair play verification.",
+      answer:
+        "Recording is not mandatory for early qualifiers, but semi-finals and finals may require at least one player from each team to record their POV for fair play verification.",
     },
     {
       question: "How do we report match scores?",
-      answer: "After the match concludes, the winning team's captain must immediately submit a screenshot of the end-game scoreboard in the designated Discord channel for verification.",
+      answer:
+        "After the match concludes, the winning team's captain must immediately submit a screenshot of the end-game scoreboard in the designated Discord channel for verification.",
     },
     {
       question: "What happens if the opposing team doesn't show up?",
-      answer: "Teams are given a strict 15-minute grace period from the scheduled start time. If the opposing team fails to show up, your team will be awarded a default win (walkover).",
+      answer:
+        "Teams are given a strict 15-minute grace period from the scheduled start time. If the opposing team fails to show up, your team will be awarded a default win (walkover).",
     },
     {
-      question: "Can B.Tech and M.Tech students from the same IIIT play together?",
-      answer: "Yes, as long as all players are currently enrolled students of the same registered IIIT, any mix of degree programs (B.Tech, M.Tech, PhD) is allowed.",
+      question:
+        "Can B.Tech and M.Tech students from the same IIIT play together?",
+      answer:
+        "Yes, as long as all players are currently enrolled students of the same registered IIIT, any mix of degree programs (B.Tech, M.Tech, PhD) is allowed.",
     },
     {
       question: "Are iPads or tablets allowed for BGMI or Free Fire?",
-      answer: "No, the mobile tournaments are strictly for smartphones. iPads, tablets, and any similar large-screen devices are not permitted to ensure a level playing field.",
+      answer:
+        "No, the mobile tournaments are strictly for smartphones. iPads, tablets, and any similar large-screen devices are not permitted to ensure a level playing field.",
     },
     {
       question: "Who do I contact for technical issues on the website?",
-      answer: "You can visit the 'Contact' page on our website to submit a support ticket, use the WhatsApp button for urgent issues, or ping our moderators directly on the Discord server.",
+      answer:
+        "You can visit the 'Contact' page on our website to submit a support ticket, or can directly message in our social handles.",
     },
   ];
 
@@ -110,10 +150,12 @@ export default function FAQSection() {
                   }`}
                 />
               </button>
-              
+
               <div
                 className={`px-3 sm:px-5 overflow-hidden transition-all duration-300 ease-in-out ${
-                  openIdx === idx ? "max-h-40 pb-4 sm:pb-5 opacity-100" : "max-h-0 opacity-0"
+                  openIdx === idx
+                    ? "max-h-40 pb-4 sm:pb-5 opacity-100"
+                    : "max-h-0 opacity-0"
                 }`}
               >
                 <p className="text-[11px] sm:text-sm text-slate-400 leading-relaxed">
@@ -127,5 +169,3 @@ export default function FAQSection() {
     </section>
   );
 }
-
-

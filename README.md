@@ -1,44 +1,38 @@
 <div align="center">
   <img src="./public/InstaBanner.png" alt="InterIIIT Esports Championship banner" style="width: 100%; max-width: 900px; border-radius: 16px;" />
   <h1>🎮 InterIIIT Esports Championship</h1>
- 
+  <p><em>Where IIIT talent meets the ultimate esports showdown.</em></p>
 </div>
 
-<br />
+## What is IEC?
 
-##  What's this all about?
+The InterIIIT Esports Championship (IEC) is a premier gaming event that brings together students from IIITs across India to compete, connect, and celebrate esports. It is a platform for skill, teamwork, and college pride.
 
-Welcome to the **InterIIIT Esports Championship**! We're bringing together the most cracked players, clutch kings, and strategic masterminds from Indian Institutes of Information Technology (IIITs) all over the country for a high-stakes tournament. 
+## What is this event about?
 
-This repository powers the official web platform where all the magic happens:
-- **College Club Registration:** A smooth portal where your college's official esports club can drop in, register, and make their mark.
-- **Verification & Approval:** Our trusty admin dashboard to make sure every entry is 100% legit (no imposters allowed!).
-- **Event Management:** The core tools keeping the tournament running without a hitch, from managing rosters to overseeing the chaos.
+IEC is built around exciting competition, strong sportsmanship, and a vibrant student community. Players from different colleges come together to battle it out across popular games, showcase their talent, and make the event unforgettable.
 
----
+## Who can participate?
 
-##  The Squad (Contributors)
+Any student representing an IIIT can participate. If you are part of a college gaming community or want to be part of the action, this event is for you.
 
-A massive shoutout to the core dev squad who built this platform from scratch and keeps the servers from catching fire:
+## The 3 stages
 
--  **Ankur** 
--  **Rahul** 
--  **Advik** 
+1. **Stage 1: Registration**  
+   Teams and players register their interest and confirm their participation.
 
-Thanks for carrying the team and bringing the championship vision to life! GG WP.
+2. **Stage 2: Qualifiers**  
+   Participants compete in matches to secure their place in the next round.
 
----
+3. **Stage 3: Grand Stage**  
+   The best teams advance to the final showdown for the championship.
 
-##  Help Directory (Grab a Medkit)
+## Timeline
 
-Stuck in the lobby? Getting some weird errors? Grab a medkit and check out our help directory below:
+- **Registration Opens:** Join early and secure your spot.
+- **Qualifier Matches:** Compete and prove your strength.
+- **Finals:** The top teams fight for the title.
 
-- **Environment Setup:** Can't get the local server running? Double-check your `.env.local` file! Make sure your MongoDB connection string and auth secrets are fully loaded before you ready up.
-- **Registration Status:** Is your college stuck on 'Pending'? Don't panic! It just means our admins are manually verifying your drop coordinates. Hang tight!
-- **Technical Support:** Found a bug? Site crashing? Ping **Ankur**, **Rahul**, or **Advik** directly. We'll investigate and deploy a hotfix ASAP.
+## The spirit of IEC
 
-<br />
-
-<div align="center">
-  <p><strong>Let the games begin.</strong></p>
-</div>
+IEC is more than a tournament. It is a celebration of gaming culture, student energy, and the pride of representing your college on a bigger stage.
