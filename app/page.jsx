@@ -33,9 +33,10 @@ export const metadata = {
 };
 
 const homeSlides = [
-  { image: "/ff/11.png" },
+  
   { image: "/valo/33.png" },
   { image: "/bgmi/23.png" },
+  { image: "/ff/11.png" },
 ];
 
 export default function Home() {
