@@ -32,29 +32,39 @@ export async function DELETE(req) {
 
     const url = new URL(req.url);
     const teamId = url.searchParams.get("teamId");
+    let teamIds = [];
 
     if (!teamId) {
-      return Response.json({ success: false, message: "Team ID is required" }, { status: 400 });
+      const body = await req.json().catch(() => ({}));
+      teamIds = Array.isArray(body.teamIds) ? body.teamIds : [];
+    } else {
+      teamIds = [teamId];
     }
 
-    const team = await Team.findById(teamId);
-    if (!team) {
+    if (teamIds.length === 0) {
+      return Response.json({ success: false, message: "At least one team ID is required" }, { status: 400 });
+    }
+
+    const teams = await Team.find({ _id: { $in: teamIds } });
+    if (teams.length === 0) {
       return Response.json({ success: false, message: "Team not found" }, { status: 404 });
     }
 
-    // Cascade delete members
+    const ids = teams.map((team) => team._id);
+    const memberIds = teams.flatMap((team) => team.members.map((member) => member.userId));
+
     await User.updateMany(
-      { _id: { $in: team.members.map((m) => m.userId) } },
+      { _id: { $in: memberIds } },
       { $set: { teamId: null, role: "PLAYER" } }
     );
 
-    await JoinRequest.deleteMany({ teamId: team._id });
-    await Invitation.deleteMany({ teamId: team._id });
-    await Team.deleteOne({ _id: team._id });
+    await JoinRequest.deleteMany({ teamId: { $in: ids } });
+    await Invitation.deleteMany({ teamId: { $in: ids } });
+    await Team.deleteMany({ _id: { $in: ids } });
 
     return Response.json({
       success: true,
-      message: "Team deleted successfully",
+      message: `${teams.length} team${teams.length === 1 ? "" : "s"} deleted successfully`,
     });
   } catch (err) {
     return Response.json({ success: false, message: err.message }, { status: 500 });

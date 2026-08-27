@@ -12,7 +12,7 @@ export default function HomeCollegesSection() {
   useEffect(() => {
     async function fetchColleges() {
       try {
-        const res = await fetch("/api/college-requests?limit=16");
+        const res = await fetch("/api/college-requests?limit=24");
         const json = await res.json();
         if (json.success) setColleges(json.data);
       } catch (err) {
@@ -45,7 +45,7 @@ export default function HomeCollegesSection() {
         {/* ── Grid ── */}
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-            {Array.from({ length: 12 }).map((_, i) => (
+            {Array.from({ length: 24 }).map((_, i) => (
               <div
                 key={i}
                 className="flex flex-col items-center gap-3 rounded-xl border border-white/5 bg-white/[0.02] p-6 animate-pulse"
