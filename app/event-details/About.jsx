@@ -17,10 +17,10 @@ const gameCards = [
 ];
 
 const stats = [
+  { label: "Colleges", value: "21 Participating IIITs" },
+  { label: "Teams", value: "1200+ IIIT Squads" },
   { label: "Titles", value: "3 Major Games" },
-  { label: "Teams", value: "50+ IIIT Squads" },
   { label: "Format", value: "Live Finals" },
-  { label: "Prize", value: "TBD" },
 ];
 
 export default function About() {

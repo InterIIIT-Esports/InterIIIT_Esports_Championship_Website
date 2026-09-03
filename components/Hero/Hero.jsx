@@ -43,12 +43,12 @@ export default function Hero() {
 
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                         <div className="rounded-3xl bg-white/5 p-5 text-slate-100">
-                            <p className="text-sm uppercase text-gray-400">Prize pool</p>
-                            <p className="mt-2 text-3xl font-bold">₹50K+</p>
+                            <p className="text-sm uppercase text-gray-400">Colleges</p>
+                            <p className="mt-2 text-3xl font-bold">21</p>
                         </div>
                         <div className="rounded-3xl bg-white/5 p-5 text-slate-100">
                             <p className="text-sm uppercase text-gray-400">Teams</p>
-                            <p className="mt-2 text-3xl font-bold">50+</p>
+                            <p className="mt-2 text-3xl font-bold">1200+</p>
                         </div>
                         <div className="rounded-3xl bg-white/5 p-5 text-slate-100">
                             <p className="text-sm uppercase text-gray-400">Games</p>

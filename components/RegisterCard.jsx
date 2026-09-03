@@ -122,6 +122,9 @@ export default function RegisterCard() {
         </div>
 
         <div className="flex flex-1 flex-col">
+          <div className="mb-3 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-center text-xs font-semibold text-red-400 sm:text-sm">
+            🔒 Team registrations are closed now.
+          </div>
           <div className="mb-4 rounded-lg border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-xs leading-relaxed text-amber-700 sm:text-sm">
             This page is for the intra phase of the championship.
             For your college-specific registration link, please visit the <Link href="/participating-colleges" className="font-semibold underline underline-offset-4 hover:text-amber-900">Colleges</Link> section.

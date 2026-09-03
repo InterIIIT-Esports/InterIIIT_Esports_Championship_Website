@@ -52,9 +52,9 @@ const stages = [
 ];
 
 const matchStats = [
-  { icon: Users, label: "Teams", value: "250+" },
+  { icon: Users, label: "Teams", value: "1200+" },
   { icon: Trophy, label: "Prize pool", value: "TBD" },
-  { icon: CalendarDays, label: "Final week", value: "August" },
+  { icon: CalendarDays, label: "Colleges", value: "21" },
   { icon: Flag, label: "Game titles", value: "3" },
 ];
 

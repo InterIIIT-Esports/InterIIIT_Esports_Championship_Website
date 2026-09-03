@@ -9,6 +9,16 @@ export async function POST(req) {
     // Authenticate the user using the JWT
     const user = await requireAuth(req);
 
+    if (user.role !== "ADMIN") {
+      return Response.json(
+        {
+          success: false,
+          message: "Team registrations are closed now. Only admins can add new teams.",
+        },
+        { status: 403 }
+      );
+    }
+
     const body = await req.json();
 
     // Create team using the logged-in user's game

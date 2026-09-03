@@ -2,9 +2,9 @@ import StatCard from "./StatCard";
 
 function StatsSection() {
   const stats = [
-    { number: "3", label: "Participating Colleges" },
+    { number: "21", label: "Participating Colleges" },
     { number: "3", label: "Game Titles" },
-    { number: "50+", label: "Teams" },
+    { number: "1200+", label: "Teams" },
     { number: "Rs 50K+", label: "Prize Pool" },
   ];
 

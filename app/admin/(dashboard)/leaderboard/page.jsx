@@ -65,7 +65,7 @@ export default function AdminLeaderboardPage() {
   const filteredTeams = teams.filter(t => 
     (gameFilter === "ALL" || t.game === gameFilter) &&
     (t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.college.toLowerCase().includes(searchQuery.toLowerCase()))
-  ).sort((a, b) => b.points - a.points || a.matchesPlayed - b.matchesPlayed);
+  ).sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div className="space-y-4">

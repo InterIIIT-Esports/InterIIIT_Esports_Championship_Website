@@ -93,23 +93,37 @@ export default function TeamActions() {
 
   return (
     <>
-      <section id="team-actions" className="bg-black pt-24 pb-12 sm:pt-32 sm:pb-20 border-b border-white/10 relative overflow-hidden px-4 sm:px-6 lg:px-8">
+      <section id="team-actions" className="bg-black min-h-[calc(100vh-140px)] flex flex-col justify-center pt-20 pb-16 border-b border-white/10 relative overflow-hidden px-4 sm:px-6 lg:px-8">
         <div className="absolute inset-x-0 top-0 h-px bg-red-600/60" />
         <div className="absolute right-0 top-0 h-72 w-72 bg-red-600/10 blur-3xl" />
 
-        <div className="relative mx-auto max-w-7xl pt-10">
+        <div className="relative mx-auto max-w-7xl w-full">
           {loading ? (
             <div className="flex h-48 w-full items-center justify-center rounded-xl border border-white/10 bg-white/5">
               <Loader2 className="h-8 w-8 animate-spin text-red-500" />
             </div>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2 max-w-4xl mx-auto">
+            <div className="space-y-6 max-w-4xl mx-auto">
               {!user?.teamId && (
-                <>
-                  <CreateTeamCard onClick={() => handleCardClick(() => setOpenModal(true))} />
-                  <JoinTeamCard onClick={() => handleCardClick(() => setJoinModal(true))} />
-                </>
+                <div className="text-center px-4 py-6 max-w-2xl mx-auto">
+                  <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-wide">
+                    Team Registrations Are Closed Now
+                  </h2>
+                  <p className="mt-3 text-xs sm:text-sm text-gray-400 leading-relaxed">
+                    Public team registration is currently closed. If your squad needs to be added, please contact a tournament administrator.
+                  </p>
+                </div>
               )}
+              {/* Create/Join Team cards hidden while registration is closed
+              <div className="grid gap-4 md:grid-cols-2">
+                {!user?.teamId && (
+                  <>
+                    <CreateTeamCard onClick={() => handleCardClick(() => setOpenModal(true))} />
+                    <JoinTeamCard onClick={() => handleCardClick(() => setJoinModal(true))} />
+                  </>
+                )}
+              </div>
+              */}
             </div>
           )}
 

@@ -2,13 +2,27 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Search, Users, Loader2, Trash2, Shield } from "lucide-react";
+import { Search, Users, Loader2, Trash2, Shield, Plus, X, ChevronDown, UserPlus, ImageIcon } from "lucide-react";
 
 export default function TeamsPage() {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeamIds, setSelectedTeamIds] = useState([]);
+
+  // Add Team Modal state
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [colleges, setColleges] = useState([]);
+  const [collegesLoading, setCollegesLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    college: "",
+    game: "",
+    leaderName: "",
+  });
+  const [players, setPlayers] = useState([]);
+  const [showPlayers, setShowPlayers] = useState(false);
 
   async function fetchTeams(currentToken) {
     try {
@@ -76,6 +90,83 @@ export default function TeamsPage() {
   const registered = teams.filter(t => t.isRegistered).length;
   const pending = teams.length - registered;
 
+  // ---- Add Team Modal logic ----
+
+  const openAddModal = async () => {
+    setShowAddModal(true);
+    setFormData({ name: "", college: "", game: "", leaderName: "" });
+    setPlayers([]);
+    setShowPlayers(false);
+
+    // Fetch colleges
+    if (colleges.length === 0) {
+      setCollegesLoading(true);
+      try {
+        const res = await fetch("/api/public/colleges");
+        const data = await res.json();
+        if (data.success) {
+          setColleges(data.colleges);
+        }
+      } catch { /* silently fail */ }
+      finally { setCollegesLoading(false); }
+    }
+  };
+
+  const closeAddModal = () => {
+    setShowAddModal(false);
+  };
+
+  const addPlayerRow = () => {
+    setPlayers((prev) => [...prev, { name: "", imageUrl: "" }]);
+    setShowPlayers(true);
+  };
+
+  const removePlayerRow = (index) => {
+    setPlayers((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updatePlayer = (index, field, value) => {
+    setPlayers((prev) => prev.map((p, i) => i === index ? { ...p, [field]: value } : p));
+  };
+
+  const handleSubmitTeam = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("/api/admin/teams", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          name: formData.name,
+          college: formData.college,
+          game: formData.game,
+          leaderName: formData.leaderName,
+          players: players.filter((p) => p.name.trim()),
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Team created successfully!");
+        closeAddModal();
+        fetchTeams(token);
+      } else {
+        toast.error(data.message || "Failed to create team");
+      }
+    } catch {
+      toast.error("An error occurred while creating the team");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const GAME_OPTIONS = [
+    { value: "BGMI", label: "BGMI", color: "bg-amber-100 text-amber-700 border-amber-200" },
+    { value: "VALORANT", label: "Valorant", color: "bg-rose-100 text-rose-700 border-rose-200" },
+    { value: "FREEFIRE", label: "Free Fire", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+  ];
+
   return (
     <div className="space-y-4">
 
@@ -86,6 +177,12 @@ export default function TeamsPage() {
           <p className="text-xs text-gray-500 mt-0.5">View and manage all registered squads</p>
         </div>
         <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+          <button
+            onClick={openAddModal}
+            className="inline-flex items-center justify-center gap-1.5 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-100"
+          >
+            <Plus size={13} /> Add Team
+          </button>
           <button
             onClick={deleteSelectedTeams}
             disabled={selectedTeamIds.length === 0}
@@ -175,8 +272,16 @@ export default function TeamsPage() {
                   <div className="flex items-center gap-2">
                     {team.isRegistered && <Shield size={11} className="text-emerald-600 shrink-0" />}
                     <p className="font-semibold text-slate-900 text-xs truncate max-w-[140px]">{team.name}</p>
+                    {team.isAdminCreated && (
+                      <span className="shrink-0 rounded bg-violet-100 border border-violet-200 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-violet-600">
+                        Admin
+                      </span>
+                    )}
                   </div>
                   <p className="text-[10px] text-gray-400 sm:hidden mt-0.5 truncate">{team.college}</p>
+                  {team.isAdminCreated && team.leaderName && (
+                    <p className="text-[10px] text-gray-400 mt-0.5">Leader: {team.leaderName}</p>
+                  )}
                 </td>
                 <td className="px-4 py-2.5 text-gray-500 hidden sm:table-cell text-xs truncate max-w-[160px]">{team.college}</td>
                 <td className="px-4 py-2.5">
@@ -185,7 +290,10 @@ export default function TeamsPage() {
                   </span>
                 </td>
                 <td className="px-4 py-2.5 text-center font-mono text-xs text-gray-500">
-                  {team.members?.length || 0}<span className="text-gray-400">/{team.maxPlayers}</span>
+                  {team.isAdminCreated
+                    ? <>{team.playerRoster?.length || 0}<span className="text-gray-400">/{team.maxPlayers}</span></>
+                    : <>{team.members?.length || 0}<span className="text-gray-400">/{team.maxPlayers}</span></>
+                  }
                 </td>
                 <td className="px-4 py-2.5">
                   <span className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${team.isRegistered ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-orange-50 text-orange-700 border-orange-200"}`}>
@@ -206,6 +314,221 @@ export default function TeamsPage() {
           </tbody>
         </table>
       </div>
+
+      {/* ====== Add Team Modal ====== */}
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={closeAddModal} />
+
+          {/* Modal */}
+          <div className="relative w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl border border-gray-200">
+            {/* Header */}
+            <div className="sticky top-0 z-10 flex items-center justify-between bg-white border-b border-gray-100 px-6 py-4 rounded-t-2xl">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 tracking-tight">Add New Team</h3>
+                <p className="text-[11px] text-gray-400 mt-0.5">Create a team directly as admin</p>
+              </div>
+              <button
+                onClick={closeAddModal}
+                className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmitTeam} className="px-6 py-5 space-y-4">
+              {/* College */}
+              <div>
+                <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                  College Name <span className="text-red-500">*</span>
+                </label>
+                {collegesLoading ? (
+                  <div className="flex items-center gap-2 py-2 text-xs text-gray-400">
+                    <Loader2 size={12} className="animate-spin" /> Loading colleges...
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <select
+                      required
+                      value={formData.college}
+                      onChange={(e) => setFormData((f) => ({ ...f, college: e.target.value }))}
+                      className="w-full appearance-none rounded-lg border border-gray-200 bg-white px-3 py-2 pr-8 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 shadow-sm"
+                    >
+                      <option value="">Select a college...</option>
+                      {colleges.map((c) => (
+                        <option key={c.name} value={c.name}>{c.name}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                  </div>
+                )}
+              </div>
+
+              {/* Game */}
+              <div>
+                <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                  Game <span className="text-red-500">*</span>
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {GAME_OPTIONS.map((g) => (
+                    <button
+                      type="button"
+                      key={g.value}
+                      onClick={() => setFormData((f) => ({ ...f, game: g.value }))}
+                      className={`rounded-lg border px-3 py-2 text-xs font-bold uppercase tracking-wider transition-all ${
+                        formData.game === g.value
+                          ? `${g.color} ring-2 ring-offset-1 ring-current scale-[1.02]`
+                          : "bg-gray-50 text-gray-400 border-gray-200 hover:bg-gray-100"
+                      }`}
+                    >
+                      {g.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Team Name */}
+              <div>
+                <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                  Team Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData((f) => ({ ...f, name: e.target.value }))}
+                  placeholder="Enter team name"
+                  className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
+                />
+              </div>
+
+              {/* Team Leader Name */}
+              <div>
+                <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                  Team Leader Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.leaderName}
+                  onChange={(e) => setFormData((f) => ({ ...f, leaderName: e.target.value }))}
+                  placeholder="Enter leader's name"
+                  className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
+                />
+              </div>
+
+              {/* Divider */}
+              <div className="relative py-2">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-100" />
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-white px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                    Optional
+                  </span>
+                </div>
+              </div>
+
+              {/* Players Section */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowPlayers(!showPlayers)}
+                    className="flex items-center gap-1.5 text-[11px] font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-700 transition-colors"
+                  >
+                    <ChevronDown size={12} className={`transition-transform ${showPlayers ? "rotate-0" : "-rotate-90"}`} />
+                    Team Players
+                    {players.length > 0 && (
+                      <span className="ml-1 rounded-full bg-gray-100 px-1.5 py-0.5 text-[9px] font-bold text-gray-500">
+                        {players.length}
+                      </span>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={addPlayerRow}
+                    className="inline-flex items-center gap-1 rounded-md border border-gray-200 bg-white px-2 py-1 text-[10px] font-bold text-gray-500 uppercase tracking-wider hover:bg-gray-50 transition-colors shadow-sm"
+                  >
+                    <UserPlus size={10} /> Add Player
+                  </button>
+                </div>
+
+                {showPlayers && players.length > 0 && (
+                  <div className="space-y-2">
+                    {players.map((player, index) => (
+                      <div key={index} className="flex items-start gap-2 rounded-lg border border-gray-100 bg-gray-50/50 p-2.5">
+                        <div className="flex-1 space-y-1.5">
+                          <input
+                            type="text"
+                            value={player.name}
+                            onChange={(e) => updatePlayer(index, "name", e.target.value)}
+                            placeholder="Player name"
+                            className="w-full rounded-md border border-gray-200 bg-white px-2.5 py-1.5 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
+                          />
+                          <div className="relative">
+                            <ImageIcon size={10} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                            <input
+                              type="url"
+                              value={player.imageUrl}
+                              onChange={(e) => updatePlayer(index, "imageUrl", e.target.value)}
+                              placeholder="Image URL (optional)"
+                              className="w-full rounded-md border border-gray-200 bg-white py-1.5 pl-7 pr-2.5 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
+                            />
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removePlayerRow(index)}
+                          className="mt-1 rounded-md p-1 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {showPlayers && players.length === 0 && (
+                  <div className="rounded-lg border border-dashed border-gray-200 bg-gray-50/50 py-6 text-center">
+                    <UserPlus size={20} className="mx-auto text-gray-300 mb-1.5" />
+                    <p className="text-[11px] text-gray-400">No players added yet. Click &quot;Add Player&quot; above.</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Submit */}
+              <div className="flex gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={closeAddModal}
+                  className="flex-1 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-500 transition-colors hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting || !formData.name || !formData.college || !formData.game || !formData.leaderName}
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-slate-900 px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 size={12} className="animate-spin" /> Creating...
+                    </>
+                  ) : (
+                    <>
+                      <Plus size={12} /> Create Team
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

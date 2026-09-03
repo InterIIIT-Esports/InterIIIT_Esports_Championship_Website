@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -71,6 +71,7 @@ export default function Navbar() {
   const links = [
     { name: "Home", href: "/" },
     { name: "Events", href: "/event-details" },
+    { name: "Leaderboard", href: "/leaderboard" },
     { name: "IEC Team", href: "/iec-team" },
     { name: "Colleges", href: "/participating-colleges" },
     { name: "Registration", href: "/register" },
