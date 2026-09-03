@@ -19,7 +19,7 @@ export async function GET(req) {
     }
 
     const query = Team.find(filter)
-      .select("name college game points matchesPlayed maxPlayers members leaderName collegeLogo leaderId isAdminCreated playerRoster")
+      .select("name college game points matchesPlayed maxPlayers members leaderName leaderImage collegeLogo leaderId isAdminCreated playerRoster")
       .populate("leaderId", "name")
       .populate("members.userId", "name");
 

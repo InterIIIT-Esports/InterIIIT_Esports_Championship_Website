@@ -36,7 +36,7 @@ export async function POST(req) {
     await requireAdmin(req);
 
     const body = await req.json();
-    const { name, college, game, leaderName, players } = body;
+    const { name, college, game, leaderName, leaderImage, players } = body;
 
     // Validate required fields
     if (!name?.trim()) {
@@ -88,6 +88,7 @@ export async function POST(req) {
       game,
       college: college.trim(),
       leaderName: leaderName.trim(),
+      leaderImage: leaderImage?.trim() || "",
       collegeLogo,
       isAdminCreated: true,
       isRegistered: true,
@@ -128,7 +129,7 @@ export async function PUT(req) {
     await requireAdmin(req);
 
     const body = await req.json();
-    const { teamId, name, college, game, leaderName, players, isRegistered } = body;
+    const { teamId, name, college, game, leaderName, leaderImage, players, isRegistered } = body;
 
     if (!teamId) {
       return Response.json({ success: false, message: "Team ID is required" }, { status: 400 });
@@ -165,6 +166,10 @@ export async function PUT(req) {
 
     if (leaderName !== undefined) {
       team.leaderName = leaderName.trim();
+    }
+
+    if (leaderImage !== undefined) {
+      team.leaderImage = leaderImage.trim();
     }
 
     if (typeof isRegistered === "boolean") {

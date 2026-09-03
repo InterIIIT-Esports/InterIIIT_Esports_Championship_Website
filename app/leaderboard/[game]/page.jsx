@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect, use } from "react";
+import { useRouter } from "next/navigation";
 import { Loader2, Trophy, Medal } from "lucide-react";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer";
@@ -22,11 +22,12 @@ const GAME_TO_SLUG = {
   FREEFIRE: "ff",
 };
 
-function LeaderboardContent() {
+export default function GameLeaderboardPage({ params: paramsPromise }) {
+  const params = use(paramsPromise);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const queryGameParam = searchParams.get("game")?.toLowerCase();
-  const initialGame = SLUG_TO_GAME[queryGameParam] || "BGMI";
+
+  const rawSlug = (params.game || "bgmi").toLowerCase();
+  const initialGame = SLUG_TO_GAME[rawSlug] || "BGMI";
 
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,19 +36,18 @@ function LeaderboardContent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (queryGameParam && SLUG_TO_GAME[queryGameParam]) {
-      setGame(SLUG_TO_GAME[queryGameParam]);
-    }
-  }, [queryGameParam]);
+    const targetGame = SLUG_TO_GAME[rawSlug] || "BGMI";
+    setGame(targetGame);
+  }, [rawSlug]);
 
   useEffect(() => {
-    fetchLeaderboard();
+    fetchLeaderboard(game);
   }, [game]);
 
-  const fetchLeaderboard = async () => {
+  const fetchLeaderboard = async (currentGame) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/public/teams?game=${game}`);
+      const res = await fetch(`/api/public/teams?game=${currentGame}`);
       const data = await res.json();
       if (data.success) {
         setTeams(data.teams.sort((a, b) => a.name.localeCompare(b.name)));
@@ -198,19 +198,5 @@ function LeaderboardContent() {
       <TeamDetailsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} team={selectedTeam} />
       <Footer />
     </>
-  );
-}
-
-export default function PublicLeaderboardPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-black flex items-center justify-center">
-          <Loader2 className="animate-spin text-red-600 w-10 h-10" />
-        </div>
-      }
-    >
-      <LeaderboardContent />
-    </Suspense>
   );
 }

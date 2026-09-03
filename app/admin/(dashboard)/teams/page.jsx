@@ -20,6 +20,7 @@ export default function TeamsPage() {
     college: "",
     game: "",
     leaderName: "",
+    leaderImage: "",
   });
   const [players, setPlayers] = useState([]);
   const [showPlayers, setShowPlayers] = useState(false);
@@ -32,6 +33,7 @@ export default function TeamsPage() {
     college: "",
     game: "",
     leaderName: "",
+    leaderImage: "",
     isRegistered: true,
   });
   const [editPlayers, setEditPlayers] = useState([]);
@@ -156,6 +158,7 @@ export default function TeamsPage() {
           college: formData.college,
           game: formData.game,
           leaderName: formData.leaderName,
+          leaderImage: formData.leaderImage,
           players: players.filter((p) => p.name.trim()),
         }),
       });
@@ -183,6 +186,7 @@ export default function TeamsPage() {
       college: team.college || "",
       game: team.game || "",
       leaderName: team.leaderName || team.leaderId?.name || "",
+      leaderImage: team.leaderImage || "",
       isRegistered: team.isRegistered ?? true,
     });
     setEditPlayers(team.playerRoster && team.playerRoster.length > 0
@@ -237,6 +241,7 @@ export default function TeamsPage() {
           college: editFormData.college,
           game: editFormData.game,
           leaderName: editFormData.leaderName,
+          leaderImage: editFormData.leaderImage,
           isRegistered: editFormData.isRegistered,
           players: editPlayers.filter((p) => p.name.trim()),
         }),
@@ -470,6 +475,36 @@ export default function TeamsPage() {
                   </div>
                 )}
                 <p className="text-[10px] text-gray-400 mt-1">Multiple teams can be added for the same college.</p>
+                {formData.college.trim() && (() => {
+                  const collegeTeams = teams.filter((t) => t.college?.toLowerCase() === formData.college.trim().toLowerCase());
+                  const bgmiCount = collegeTeams.filter((t) => t.game === "BGMI").length;
+                  const valoCount = collegeTeams.filter((t) => t.game === "VALORANT").length;
+                  const ffCount = collegeTeams.filter((t) => t.game === "FREEFIRE").length;
+                  return (
+                    <div className="mt-2.5 rounded-lg border border-blue-200 bg-blue-50/70 p-3 text-xs">
+                      <div className="flex items-center justify-between font-bold text-blue-900 mb-1">
+                        <span>Registered Teams for &quot;{formData.college.trim()}&quot;</span>
+                        <span className="rounded-full bg-blue-200 px-2 py-0.5 text-[10px] text-blue-800 font-bold">
+                          {collegeTeams.length} Total
+                        </span>
+                      </div>
+                      {collegeTeams.length === 0 ? (
+                        <p className="text-[11px] text-blue-600 italic">No teams registered for this college yet.</p>
+                      ) : (
+                        <div className="space-y-1.5">
+                          <div className="flex flex-wrap gap-1.5 text-[10px] font-bold">
+                            <span className="rounded bg-amber-100 text-amber-800 px-1.5 py-0.5 border border-amber-200">BGMI: {bgmiCount}</span>
+                            <span className="rounded bg-rose-100 text-rose-800 px-1.5 py-0.5 border border-rose-200">Valorant: {valoCount}</span>
+                            <span className="rounded bg-emerald-100 text-emerald-800 px-1.5 py-0.5 border border-emerald-200">Free Fire: {ffCount}</span>
+                          </div>
+                          <p className="text-[10px] text-blue-700 font-medium truncate">
+                            <span className="font-semibold text-blue-900">Squads:</span> {collegeTeams.map((t) => `${t.name} (${t.game})`).join(", ")}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* Game */}
@@ -510,19 +545,33 @@ export default function TeamsPage() {
                 />
               </div>
 
-              {/* Team Leader Name */}
-              <div>
-                <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-                  Team Leader Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.leaderName}
-                  onChange={(e) => setFormData((f) => ({ ...f, leaderName: e.target.value }))}
-                  placeholder="Enter leader's name"
-                  className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
-                />
+              {/* Team Leader Name & Leader Image */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                    Team Leader Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.leaderName}
+                    onChange={(e) => setFormData((f) => ({ ...f, leaderName: e.target.value }))}
+                    placeholder="Enter leader's name"
+                    className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                    Leader Image URL <span className="text-gray-400 font-normal">(Optional)</span>
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.leaderImage}
+                    onChange={(e) => setFormData((f) => ({ ...f, leaderImage: e.target.value }))}
+                    placeholder="https://..."
+                    className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
+                  />
+                </div>
               </div>
 
               {/* Divider */}
@@ -720,19 +769,33 @@ export default function TeamsPage() {
                 />
               </div>
 
-              {/* Team Leader Name */}
-              <div>
-                <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-                  Team Leader Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={editFormData.leaderName}
-                  onChange={(e) => setEditFormData((f) => ({ ...f, leaderName: e.target.value }))}
-                  placeholder="Enter leader's name"
-                  className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
-                />
+              {/* Team Leader Name & Leader Image */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                    Team Leader Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editFormData.leaderName}
+                    onChange={(e) => setEditFormData((f) => ({ ...f, leaderName: e.target.value }))}
+                    placeholder="Enter leader's name"
+                    className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                    Leader Image URL <span className="text-gray-400 font-normal">(Optional)</span>
+                  </label>
+                  <input
+                    type="url"
+                    value={editFormData.leaderImage}
+                    onChange={(e) => setEditFormData((f) => ({ ...f, leaderImage: e.target.value }))}
+                    placeholder="https://..."
+                    className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
+                  />
+                </div>
               </div>
 
               {/* Registration Status */}
