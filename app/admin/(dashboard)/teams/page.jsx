@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Search, Users, Loader2, Trash2, Shield, Plus, X, ChevronDown, UserPlus, ImageIcon } from "lucide-react";
+import { Search, Users, Loader2, Trash2, Shield, Plus, X, ChevronDown, UserPlus, ImageIcon, Pencil } from "lucide-react";
 
 export default function TeamsPage() {
   const [teams, setTeams] = useState([]);
@@ -23,6 +23,19 @@ export default function TeamsPage() {
   });
   const [players, setPlayers] = useState([]);
   const [showPlayers, setShowPlayers] = useState(false);
+
+  // Edit Team Modal state
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingTeamId, setEditingTeamId] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    name: "",
+    college: "",
+    game: "",
+    leaderName: "",
+    isRegistered: true,
+  });
+  const [editPlayers, setEditPlayers] = useState([]);
+  const [showEditPlayers, setShowEditPlayers] = useState(false);
 
   async function fetchTeams(currentToken) {
     try {
@@ -161,6 +174,88 @@ export default function TeamsPage() {
     }
   };
 
+  // ---- Edit Team Modal logic ----
+
+  const openEditModal = (team) => {
+    setEditingTeamId(team._id);
+    setEditFormData({
+      name: team.name || "",
+      college: team.college || "",
+      game: team.game || "",
+      leaderName: team.leaderName || team.leaderId?.name || "",
+      isRegistered: team.isRegistered ?? true,
+    });
+    setEditPlayers(team.playerRoster && team.playerRoster.length > 0
+      ? team.playerRoster.map(p => ({ name: p.name || "", imageUrl: p.imageUrl || "" }))
+      : team.members && team.members.length > 0
+      ? team.members.map(m => ({ name: m.userId?.name || "Player", imageUrl: "" }))
+      : []
+    );
+    setShowEditPlayers((team.playerRoster && team.playerRoster.length > 0) || (team.members && team.members.length > 0));
+    setShowEditModal(true);
+
+    if (colleges.length === 0) {
+      setCollegesLoading(true);
+      fetch("/api/public/colleges")
+        .then(r => r.json())
+        .then(data => { if (data.success) setColleges(data.colleges); })
+        .catch(() => {})
+        .finally(() => setCollegesLoading(false));
+    }
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setEditingTeamId(null);
+  };
+
+  const addEditPlayerRow = () => {
+    setEditPlayers((prev) => [...prev, { name: "", imageUrl: "" }]);
+    setShowEditPlayers(true);
+  };
+
+  const removeEditPlayerRow = (index) => {
+    setEditPlayers((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updateEditPlayer = (index, field, value) => {
+    setEditPlayers((prev) => prev.map((p, i) => i === index ? { ...p, [field]: value } : p));
+  };
+
+  const handleUpdateTeam = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("/api/admin/teams", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          teamId: editingTeamId,
+          name: editFormData.name,
+          college: editFormData.college,
+          game: editFormData.game,
+          leaderName: editFormData.leaderName,
+          isRegistered: editFormData.isRegistered,
+          players: editPlayers.filter((p) => p.name.trim()),
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Team updated successfully!");
+        closeEditModal();
+        fetchTeams(token);
+      } else {
+        toast.error(data.message || "Failed to update team");
+      }
+    } catch {
+      toast.error("An error occurred while updating the team");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const GAME_OPTIONS = [
     { value: "BGMI", label: "BGMI", color: "bg-amber-100 text-amber-700 border-amber-200" },
     { value: "VALORANT", label: "Valorant", color: "bg-rose-100 text-rose-700 border-rose-200" },
@@ -279,8 +374,8 @@ export default function TeamsPage() {
                     )}
                   </div>
                   <p className="text-[10px] text-gray-400 sm:hidden mt-0.5 truncate">{team.college}</p>
-                  {team.isAdminCreated && team.leaderName && (
-                    <p className="text-[10px] text-gray-400 mt-0.5">Leader: {team.leaderName}</p>
+                  {(team.isAdminCreated || team.leaderName) && (
+                    <p className="text-[10px] text-gray-400 mt-0.5">Leader: {team.leaderName || team.leaderId?.name || "N/A"}</p>
                   )}
                 </td>
                 <td className="px-4 py-2.5 text-gray-500 hidden sm:table-cell text-xs truncate max-w-[160px]">{team.college}</td>
@@ -290,7 +385,7 @@ export default function TeamsPage() {
                   </span>
                 </td>
                 <td className="px-4 py-2.5 text-center font-mono text-xs text-gray-500">
-                  {team.isAdminCreated
+                  {team.isAdminCreated || (team.playerRoster && team.playerRoster.length > 0)
                     ? <>{team.playerRoster?.length || 0}<span className="text-gray-400">/{team.maxPlayers}</span></>
                     : <>{team.members?.length || 0}<span className="text-gray-400">/{team.maxPlayers}</span></>
                   }
@@ -302,12 +397,20 @@ export default function TeamsPage() {
                   </span>
                 </td>
                 <td className="px-4 py-2.5 text-right">
-                  <button
-                    onClick={() => deleteTeam(team._id)}
-                    className="inline-flex items-center gap-1 rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-red-600 border border-red-200 bg-red-50 hover:bg-red-100 transition-colors opacity-0 group-hover:opacity-100"
-                  >
-                    <Trash2 size={10} /> Delete
-                  </button>
+                  <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-colors">
+                    <button
+                      onClick={() => openEditModal(team)}
+                      className="inline-flex items-center gap-1 rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-600 border border-blue-200 bg-blue-50 hover:bg-blue-100 transition-colors"
+                    >
+                      <Pencil size={10} /> Edit
+                    </button>
+                    <button
+                      onClick={() => deleteTeam(team._id)}
+                      className="inline-flex items-center gap-1 rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-red-600 border border-red-200 bg-red-50 hover:bg-red-100 transition-colors"
+                    >
+                      <Trash2 size={10} /> Delete
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -350,20 +453,23 @@ export default function TeamsPage() {
                   </div>
                 ) : (
                   <div className="relative">
-                    <select
+                    <input
+                      type="text"
                       required
+                      list="college-suggestions"
                       value={formData.college}
                       onChange={(e) => setFormData((f) => ({ ...f, college: e.target.value }))}
-                      className="w-full appearance-none rounded-lg border border-gray-200 bg-white px-3 py-2 pr-8 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 shadow-sm"
-                    >
-                      <option value="">Select a college...</option>
+                      placeholder="Select or type college name..."
+                      className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
+                    />
+                    <datalist id="college-suggestions">
                       {colleges.map((c) => (
-                        <option key={c.name} value={c.name}>{c.name}</option>
+                        <option key={c.name} value={c.name} />
                       ))}
-                    </select>
-                    <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                    </datalist>
                   </div>
                 )}
+                <p className="text-[10px] text-gray-400 mt-1">Multiple teams can be added for the same college.</p>
               </div>
 
               {/* Game */}
@@ -520,6 +626,245 @@ export default function TeamsPage() {
                   ) : (
                     <>
                       <Plus size={12} /> Create Team
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ====== Edit Team Modal ====== */}
+      {showEditModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={closeEditModal} />
+
+          {/* Modal */}
+          <div className="relative w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl border border-gray-200">
+            {/* Header */}
+            <div className="sticky top-0 z-10 flex items-center justify-between bg-white border-b border-gray-100 px-6 py-4 rounded-t-2xl">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 tracking-tight">Edit Team Details</h3>
+                <p className="text-[11px] text-gray-400 mt-0.5">Modify squad parameters and roster</p>
+              </div>
+              <button
+                onClick={closeEditModal}
+                className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleUpdateTeam} className="px-6 py-5 space-y-4">
+              {/* College */}
+              <div>
+                <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                  College Name <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    required
+                    list="edit-college-suggestions"
+                    value={editFormData.college}
+                    onChange={(e) => setEditFormData((f) => ({ ...f, college: e.target.value }))}
+                    placeholder="Select or type college name..."
+                    className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
+                  />
+                  <datalist id="edit-college-suggestions">
+                    {colleges.map((c) => (
+                      <option key={c.name} value={c.name} />
+                    ))}
+                  </datalist>
+                </div>
+              </div>
+
+              {/* Game */}
+              <div>
+                <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                  Game <span className="text-red-500">*</span>
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {GAME_OPTIONS.map((g) => (
+                    <button
+                      type="button"
+                      key={g.value}
+                      onClick={() => setEditFormData((f) => ({ ...f, game: g.value }))}
+                      className={`rounded-lg border px-3 py-2 text-xs font-bold uppercase tracking-wider transition-all ${
+                        editFormData.game === g.value
+                          ? `${g.color} ring-2 ring-offset-1 ring-current scale-[1.02]`
+                          : "bg-gray-50 text-gray-400 border-gray-200 hover:bg-gray-100"
+                      }`}
+                    >
+                      {g.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Team Name */}
+              <div>
+                <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                  Team Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editFormData.name}
+                  onChange={(e) => setEditFormData((f) => ({ ...f, name: e.target.value }))}
+                  placeholder="Enter team name"
+                  className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
+                />
+              </div>
+
+              {/* Team Leader Name */}
+              <div>
+                <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                  Team Leader Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editFormData.leaderName}
+                  onChange={(e) => setEditFormData((f) => ({ ...f, leaderName: e.target.value }))}
+                  placeholder="Enter leader's name"
+                  className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
+                />
+              </div>
+
+              {/* Registration Status */}
+              <div>
+                <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                  Registration Status
+                </label>
+                <div className="flex gap-3 items-center pt-1">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                    <input
+                      type="radio"
+                      name="isRegistered"
+                      checked={editFormData.isRegistered === true}
+                      onChange={() => setEditFormData((f) => ({ ...f, isRegistered: true }))}
+                      className="accent-emerald-600"
+                    />
+                    Registered (Locked)
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                    <input
+                      type="radio"
+                      name="isRegistered"
+                      checked={editFormData.isRegistered === false}
+                      onChange={() => setEditFormData((f) => ({ ...f, isRegistered: false }))}
+                      className="accent-orange-600"
+                    />
+                    Pending
+                  </label>
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="relative py-2">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-100" />
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-white px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                    Roster Players
+                  </span>
+                </div>
+              </div>
+
+              {/* Players Section */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowEditPlayers(!showEditPlayers)}
+                    className="flex items-center gap-1.5 text-[11px] font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-700 transition-colors"
+                  >
+                    <ChevronDown size={12} className={`transition-transform ${showEditPlayers ? "rotate-0" : "-rotate-90"}`} />
+                    Team Players
+                    {editPlayers.length > 0 && (
+                      <span className="ml-1 rounded-full bg-gray-100 px-1.5 py-0.5 text-[9px] font-bold text-gray-500">
+                        {editPlayers.length}
+                      </span>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={addEditPlayerRow}
+                    className="inline-flex items-center gap-1 rounded-md border border-gray-200 bg-white px-2 py-1 text-[10px] font-bold text-gray-500 uppercase tracking-wider hover:bg-gray-50 transition-colors shadow-sm"
+                  >
+                    <UserPlus size={10} /> Add Player
+                  </button>
+                </div>
+
+                {showEditPlayers && editPlayers.length > 0 && (
+                  <div className="space-y-2">
+                    {editPlayers.map((player, index) => (
+                      <div key={index} className="flex items-start gap-2 rounded-lg border border-gray-100 bg-gray-50/50 p-2.5">
+                        <div className="flex-1 space-y-1.5">
+                          <input
+                            type="text"
+                            value={player.name}
+                            onChange={(e) => updateEditPlayer(index, "name", e.target.value)}
+                            placeholder="Player name"
+                            className="w-full rounded-md border border-gray-200 bg-white px-2.5 py-1.5 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
+                          />
+                          <div className="relative">
+                            <ImageIcon size={10} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                            <input
+                              type="url"
+                              value={player.imageUrl}
+                              onChange={(e) => updateEditPlayer(index, "imageUrl", e.target.value)}
+                              placeholder="Image URL (optional)"
+                              className="w-full rounded-md border border-gray-200 bg-white py-1.5 pl-7 pr-2.5 text-xs text-slate-900 outline-none transition-colors focus:border-red-500 placeholder:text-gray-400 shadow-sm"
+                            />
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeEditPlayerRow(index)}
+                          className="mt-1 rounded-md p-1 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {showEditPlayers && editPlayers.length === 0 && (
+                  <div className="rounded-lg border border-dashed border-gray-200 bg-gray-50/50 py-6 text-center">
+                    <UserPlus size={20} className="mx-auto text-gray-300 mb-1.5" />
+                    <p className="text-[11px] text-gray-400">No players added yet. Click &quot;Add Player&quot; above.</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Submit */}
+              <div className="flex gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={closeEditModal}
+                  className="flex-1 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-500 transition-colors hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting || !editFormData.name || !editFormData.college || !editFormData.game || !editFormData.leaderName}
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 size={12} className="animate-spin" /> Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Pencil size={12} /> Save Changes
                     </>
                   )}
                 </button>

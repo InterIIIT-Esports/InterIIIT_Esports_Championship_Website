@@ -31,10 +31,12 @@ export default function PublicLeaderboardPage() {
     }
   };
 
-  const getRankStyle = (index) => {
-    if (index === 0) return "text-yellow-400 bg-yellow-400/10 border-yellow-400/50";
-    if (index === 1) return "text-slate-300 bg-slate-300/10 border-slate-300/50";
-    if (index === 2) return "text-amber-600 bg-amber-600/10 border-amber-600/50";
+  const getRankStyle = (index, points) => {
+    if (points > 0) {
+      if (index === 0) return "text-yellow-400 bg-yellow-400/10 border-yellow-400/50";
+      if (index === 1) return "text-slate-300 bg-slate-300/10 border-slate-300/50";
+      if (index === 2) return "text-amber-600 bg-amber-600/10 border-amber-600/50";
+    }
     return "text-slate-500 bg-white/5 border-white/10";
   };
 
@@ -85,31 +87,56 @@ export default function PublicLeaderboardPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
-                      {teams.map((team, index) => (
-                        <tr 
-                          key={team._id} 
-                          className={`transition-all hover:bg-white/[0.04] ${index < 3 ? 'bg-gradient-to-r from-red-900/10 to-transparent' : ''}`}
-                        >
-                          <td className="px-2 py-3 sm:px-6 sm:py-5 text-center">
-                            <div className={`mx-auto w-7 h-7 sm:w-10 sm:h-10 rounded-full border-2 flex items-center justify-center font-bold text-xs sm:text-base ${getRankStyle(index)}`}>
-                              {index === 0 ? <Trophy size={14} className="sm:w-4 sm:h-4" /> : index < 3 ? <Medal size={14} className="sm:w-4 sm:h-4" /> : index + 1}
-                            </div>
-                          </td>
-                          <td className="px-3 py-3 sm:px-6 sm:py-5">
-                            <p className="font-bold text-white text-xs sm:text-lg tracking-wide">{team.name}</p>
-                            <p className="text-[10px] sm:text-xs text-slate-400 sm:hidden mt-0.5">{team.college}</p>
-                          </td>
-                          <td className="px-4 py-3 sm:px-6 sm:py-5 text-slate-400 text-xs sm:text-base hidden sm:table-cell">
-                            {team.college}
-                          </td>
-                          <td className="px-2 py-3 sm:px-6 sm:py-5 text-center font-medium text-slate-300 text-xs sm:text-base">
-                            {team.matchesPlayed || 0}
-                          </td>
-                          <td className="px-3 py-3 sm:px-6 sm:py-5 text-right font-display text-sm sm:text-2xl font-bold text-red-500">
-                            {team.points || 0}
-                          </td>
-                        </tr>
-                      ))}
+                      {teams.map((team, index) => {
+                        const hasPoints = (team.points || 0) > 0;
+                        const showPodiumIcon = hasPoints && index < 3;
+                        const leader = team.leaderName || team.leaderId?.name;
+
+                        return (
+                          <tr 
+                            key={team._id} 
+                            className={`transition-all hover:bg-white/[0.04] ${showPodiumIcon ? 'bg-gradient-to-r from-red-900/10 to-transparent' : ''}`}
+                          >
+                            <td className="px-2 py-3 sm:px-6 sm:py-5 text-center">
+                              <div className={`mx-auto w-7 h-7 sm:w-10 sm:h-10 rounded-full border-2 flex items-center justify-center font-bold text-xs sm:text-base ${getRankStyle(index, team.points || 0)}`}>
+                                {showPodiumIcon ? (
+                                  index === 0 ? <Trophy size={14} className="sm:w-4 sm:h-4" /> : <Medal size={14} className="sm:w-4 sm:h-4" />
+                                ) : (
+                                  index + 1
+                                )}
+                              </div>
+                            </td>
+                            <td className="px-3 py-3 sm:px-6 sm:py-5">
+                              <p className="font-bold text-white text-xs sm:text-lg tracking-wide">{team.name}</p>
+                              {leader && (
+                                <p className="text-[10px] sm:text-xs text-slate-400 mt-0.5">
+                                  Leader: <span className="text-slate-300 font-medium">{leader}</span>
+                                </p>
+                              )}
+                              <div className="flex items-center gap-1.5 text-[10px] text-slate-400 sm:hidden mt-1">
+                                {team.collegeLogo && (
+                                  <img src={team.collegeLogo} alt={team.college} className="w-3.5 h-3.5 object-contain rounded-full bg-white p-0.5 shrink-0" />
+                                )}
+                                <span className="truncate">{team.college}</span>
+                              </div>
+                            </td>
+                            <td className="px-4 py-3 sm:px-6 sm:py-5 text-slate-400 text-xs sm:text-base hidden sm:table-cell">
+                              <div className="flex items-center gap-2">
+                                {team.collegeLogo && (
+                                  <img src={team.collegeLogo} alt={team.college} className="w-5 h-5 sm:w-6 sm:h-6 object-contain rounded-full bg-white p-0.5 shrink-0" />
+                                )}
+                                <span>{team.college}</span>
+                              </div>
+                            </td>
+                            <td className="px-2 py-3 sm:px-6 sm:py-5 text-center font-medium text-slate-300 text-xs sm:text-base">
+                              {team.matchesPlayed || 0}
+                            </td>
+                            <td className="px-3 py-3 sm:px-6 sm:py-5 text-right font-display text-sm sm:text-2xl font-bold text-red-500">
+                              {team.points || 0}
+                            </td>
+                          </tr>
+                        );
+                      })}
                       {teams.length === 0 && (
                         <tr>
                           <td colSpan="5" className="px-4 py-12 sm:px-6 sm:py-16 text-center text-xs sm:text-sm text-slate-500">
