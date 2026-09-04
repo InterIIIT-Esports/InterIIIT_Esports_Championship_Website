@@ -16,6 +16,12 @@ const SLUG_TO_GAME = {
   freefire: "FREEFIRE",
 };
 
+const GAME_DISPLAY_NAME = {
+  BGMI: "BGMI",
+  VALORANT: "Valorant",
+  FREEFIRE: "Free Fire",
+};
+
 const GAME_TO_SLUG = {
   BGMI: "bgmi",
   VALORANT: "valo",
@@ -50,7 +56,7 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
       const res = await fetch(`/api/public/teams?game=${currentGame}`);
       const data = await res.json();
       if (data.success) {
-        setTeams(data.teams.sort((a, b) => a.name.localeCompare(b.name)));
+        setTeams(data.teams.sort((a, b) => (b.points || 0) - (a.points || 0)));
       }
     } catch (err) {
       console.error(err);
@@ -74,6 +80,16 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
     return "text-slate-500 bg-white/5 border-white/10";
   };
 
+  const getKD = (team) => {
+    if (team.kdRatio !== undefined && team.kdRatio !== null && team.kdRatio > 0) {
+      return Number(team.kdRatio).toFixed(2);
+    }
+    const k = team.kills || 0;
+    const d = team.deaths || 0;
+    if (d === 0) return k > 0 ? k.toFixed(1) : "—";
+    return (k / d).toFixed(2);
+  };
+
   return (
     <>
       <Navbar />
@@ -85,7 +101,7 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
         <div className="relative mx-auto max-w-5xl px-3 sm:px-6">
           <div className="text-center mb-6 sm:mb-12">
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-[family-name:var(--font-display)] font-bold text-white tracking-wide uppercase italic mb-2 sm:mb-4">
-              Current <span className="text-red-600">Standings</span>
+              <span className="text-red-600">{GAME_DISPLAY_NAME[game] || game}</span> Standings
             </h1>
             <p className="text-slate-400 text-xs sm:text-lg max-w-2xl mx-auto px-2">
               Track the top performing teams in the Inter-IIIT Esports Championship. Click any team to view roster.
@@ -109,14 +125,16 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
           ) : (
             <div className="space-y-4">
               <div className="bg-white/[0.02] border border-white/10 rounded-xl sm:rounded-2xl overflow-hidden backdrop-blur-sm">
-                <div className="w-full overflow-hidden">
-                  <table className="w-full text-left table-fixed">
+                <div className="w-full overflow-x-auto">
+                  <table className="w-full text-left" style={{ minWidth: '540px' }}>
                     <thead className="bg-white/5 text-[10px] sm:text-xs uppercase tracking-wider text-slate-400 border-b border-white/10">
                       <tr>
-                        <th className="w-8 sm:w-16 px-1 sm:px-4 py-2.5 sm:py-4 font-semibold text-center">Rank</th>
-                        <th className="px-2 sm:px-4 py-2.5 sm:py-4 font-semibold">Team & Roster</th>
-                        <th className="hidden sm:table-cell sm:w-24 px-4 py-4 font-semibold text-center">Matches</th>
-                        <th className="w-16 sm:w-28 px-3 sm:px-6 py-2.5 sm:py-4 font-semibold text-right">Points</th>
+                        <th className="w-10 sm:w-16 px-1 sm:px-4 py-2.5 sm:py-4 font-semibold text-center">Rank</th>
+                        <th className="px-2 sm:px-4 py-2.5 sm:py-4 font-semibold">Team</th>
+                        <th className="w-12 sm:w-20 px-1 sm:px-3 py-2.5 sm:py-4 font-semibold text-center">MP</th>
+                        <th className="w-12 sm:w-20 px-1 sm:px-3 py-2.5 sm:py-4 font-semibold text-center">W</th>
+                        <th className="w-14 sm:w-20 px-1 sm:px-3 py-2.5 sm:py-4 font-semibold text-center">K/D</th>
+                        <th className="w-14 sm:w-24 px-2 sm:px-4 py-2.5 sm:py-4 font-semibold text-right">Pts</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
@@ -171,10 +189,16 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
                                 </div>
                               </div>
                             </td>
-                            <td className="hidden sm:table-cell sm:w-24 px-4 py-3.5 text-center font-semibold text-slate-300 text-sm sm:text-base">
+                            <td className="px-1 sm:px-3 py-2.5 sm:py-3.5 text-center font-semibold text-slate-300 text-xs sm:text-base">
                               {team.matchesPlayed || 0}
                             </td>
-                            <td className="px-3 sm:px-6 py-2.5 sm:py-3.5 text-right font-display text-sm sm:text-xl font-bold text-red-500">
+                            <td className="px-1 sm:px-3 py-2.5 sm:py-3.5 text-center font-semibold text-emerald-400 text-xs sm:text-base">
+                              {team.wins || 0}
+                            </td>
+                            <td className="px-1 sm:px-3 py-2.5 sm:py-3.5 text-center font-semibold text-sky-400 text-xs sm:text-base">
+                              {getKD(team)}
+                            </td>
+                            <td className="px-2 sm:px-4 py-2.5 sm:py-3.5 text-right font-display text-sm sm:text-xl font-bold text-red-500">
                               {team.points || 0}
                             </td>
                           </tr>
@@ -182,7 +206,7 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
                       })}
                       {teams.length === 0 && (
                         <tr>
-                          <td colSpan="5" className="px-4 py-12 sm:px-6 sm:py-16 text-center text-xs sm:text-sm text-slate-500">
+                          <td colSpan="6" className="px-4 py-12 sm:px-6 sm:py-16 text-center text-xs sm:text-sm text-slate-500">
                             No teams registered or ranked for this game yet.
                           </td>
                         </tr>
@@ -200,3 +224,4 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
     </>
   );
 }
+

@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Loader2, Plus, Minus, Search } from "lucide-react";
+import { Loader2, Save, Search } from "lucide-react";
 
 export default function AdminLeaderboardPage() {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [savingMap, setSavingMap] = useState({});
+  const [drafts, setDrafts] = useState({});
   const [token, setToken] = useState("");
   const [gameFilter, setGameFilter] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,6 +28,17 @@ export default function AdminLeaderboardPage() {
       const data = await res.json();
       if (data.success) {
         setTeams(data.teams);
+        // Initialize drafts map
+        const initialDrafts = {};
+        data.teams.forEach(t => {
+          initialDrafts[t._id] = {
+            matchesPlayed: t.matchesPlayed ?? 0,
+            wins: t.wins ?? 0,
+            kdRatio: t.kdRatio ?? 0,
+            points: t.points ?? 0,
+          };
+        });
+        setDrafts(initialDrafts);
       }
     } catch (err) {
       toast.error("Failed to load leaderboard");
@@ -34,7 +47,26 @@ export default function AdminLeaderboardPage() {
     }
   };
 
-  const updatePoints = async (teamId, currentPoints, currentMatches, pointChange, matchChange) => {
+  const handleInputChange = (teamId, field, value) => {
+    setDrafts(prev => ({
+      ...prev,
+      [teamId]: {
+        ...(prev[teamId] || {}),
+        [field]: value,
+      }
+    }));
+  };
+
+  const handleSave = async (team) => {
+    const teamId = team._id;
+    const draft = drafts[teamId] || {
+      matchesPlayed: team.matchesPlayed || 0,
+      wins: team.wins || 0,
+      kdRatio: team.kdRatio || 0,
+      points: team.points || 0,
+    };
+
+    setSavingMap(prev => ({ ...prev, [teamId]: true }));
     try {
       const res = await fetch("/api/admin/teams/points", {
         method: "PATCH",
@@ -44,28 +76,31 @@ export default function AdminLeaderboardPage() {
         },
         body: JSON.stringify({
           teamId,
-          points: currentPoints + pointChange,
-          matchesPlayed: currentMatches + matchChange
+          matchesPlayed: Number(draft.matchesPlayed || 0),
+          wins: Number(draft.wins || 0),
+          kdRatio: Number(draft.kdRatio || 0),
+          points: Number(draft.points || 0),
         })
       });
 
       const data = await res.json();
       if (data.success) {
-        // Update local state to avoid refetching everything instantly if we don't want to
-        setTeams(prev => prev.map(t => t._id === teamId ? { ...t, points: data.team.points, matchesPlayed: data.team.matchesPlayed } : t));
-        toast.success("Score updated");
+        setTeams(prev => prev.map(t => t._id === teamId ? { ...t, ...data.team } : t));
+        toast.success(`Saved stats for ${team.name}`);
       } else {
-        toast.error(data.error);
+        toast.error(data.error || "Failed to save");
       }
     } catch (err) {
       toast.error("Update failed");
+    } finally {
+      setSavingMap(prev => ({ ...prev, [teamId]: false }));
     }
   };
 
   const filteredTeams = teams.filter(t => 
     (gameFilter === "ALL" || t.game === gameFilter) &&
     (t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.college.toLowerCase().includes(searchQuery.toLowerCase()))
-  ).sort((a, b) => a.name.localeCompare(b.name));
+  ).sort((a, b) => (b.points || 0) - (a.points || 0));
 
   return (
     <div className="space-y-4">
@@ -74,7 +109,7 @@ export default function AdminLeaderboardPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-base font-bold text-slate-900 tracking-tight">Leaderboard Management</h2>
-          <p className="text-xs text-gray-500 mt-0.5">Update scores after every match.</p>
+          <p className="text-xs text-gray-500 mt-0.5">Enter team stats and click Save for each team.</p>
         </div>
         <div className="flex gap-3 items-center flex-wrap">
           <select
@@ -114,53 +149,106 @@ export default function AdminLeaderboardPage() {
         ))}
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-        <table className="w-full text-left text-sm text-gray-500">
+      <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-x-auto">
+        <table className="w-full text-left text-sm text-gray-500 min-w-[700px]">
           <thead className="bg-gray-50 border-b border-gray-200 text-[10px] uppercase text-gray-400">
             <tr>
-              <th className="px-4 py-2.5 font-semibold tracking-wider">Rank</th>
-              <th className="px-4 py-2.5 font-semibold tracking-wider">Team</th>
-              <th className="px-4 py-2.5 font-semibold tracking-wider">Game</th>
-              <th className="px-4 py-2.5 font-semibold tracking-wider text-center">Matches</th>
-              <th className="px-4 py-2.5 font-semibold tracking-wider text-center">Points</th>
-              <th className="px-4 py-2.5 font-semibold tracking-wider text-right">Adjust Points</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider w-12">Rank</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider">Team</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider w-24">Game</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-24">Matches</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-24">Wins</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-28">KD Ratio</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-28">Points</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-24">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {filteredTeams.map((team, index) => (
-              <tr key={team._id} className="transition-colors hover:bg-gray-50">
-                <td className="px-4 py-2.5 font-bold text-slate-900">#{index + 1}</td>
-                <td className="px-4 py-2.5">
-                  <p className="font-bold text-slate-900 text-sm">{team.name}</p>
-                  <p className="text-[10px] text-gray-400">{team.college}</p>
-                </td>
-                <td className="px-4 py-2.5 text-gray-600 font-semibold">{team.game}</td>
-                <td className="px-4 py-2.5">
-                  <div className="flex items-center justify-center gap-2">
-                    <button onClick={() => updatePoints(team._id, team.points, team.matchesPlayed, 0, -1)} className="p-0.5 rounded bg-gray-100 hover:bg-gray-200 text-slate-600"><Minus size={10} /></button>
-                    <span className="font-bold text-slate-900 w-4 text-center text-xs">{team.matchesPlayed || 0}</span>
-                    <button onClick={() => updatePoints(team._id, team.points, team.matchesPlayed, 0, 1)} className="p-0.5 rounded bg-gray-100 hover:bg-gray-200 text-slate-600"><Plus size={10} /></button>
-                  </div>
-                </td>
-                <td className="px-4 py-2.5">
-                  <div className="flex items-center justify-center">
-                    <span className="font-bold text-red-600 text-sm w-8 text-center">{team.points || 0}</span>
-                  </div>
-                </td>
-                <td className="px-4 py-2.5">
-                  <div className="flex items-center justify-end gap-1.5">
-                    <button onClick={() => updatePoints(team._id, team.points, team.matchesPlayed, -1, 0)} className="px-1.5 py-0.5 rounded bg-gray-100 hover:bg-gray-200 text-slate-600 font-semibold text-[10px]">-1</button>
-                    <button onClick={() => updatePoints(team._id, team.points, team.matchesPlayed, -5, 0)} className="px-1.5 py-0.5 rounded bg-gray-100 hover:bg-gray-200 text-slate-600 font-semibold text-[10px]">-5</button>
-                    <button onClick={() => updatePoints(team._id, team.points, team.matchesPlayed, 1, 0)} className="px-1.5 py-0.5 rounded bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-[10px]">+1</button>
-                    <button onClick={() => updatePoints(team._id, team.points, team.matchesPlayed, 5, 0)} className="px-1.5 py-0.5 rounded bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-[10px]">+5</button>
-                    <button onClick={() => updatePoints(team._id, team.points, team.matchesPlayed, 10, 0)} className="px-1.5 py-0.5 rounded bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-[10px]">+10</button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {filteredTeams.map((team, index) => {
+              const draft = drafts[team._id] || {
+                matchesPlayed: team.matchesPlayed || 0,
+                wins: team.wins || 0,
+                kdRatio: team.kdRatio || 0,
+                points: team.points || 0,
+              };
+              const isSaving = savingMap[team._id];
+
+              return (
+                <tr key={team._id} className="transition-colors hover:bg-gray-50">
+                  <td className="px-3 py-2.5 font-bold text-slate-900 text-center">#{index + 1}</td>
+                  <td className="px-3 py-2.5">
+                    <p className="font-bold text-slate-900 text-sm">{team.name}</p>
+                    <p className="text-[10px] text-gray-400">{team.college}</p>
+                  </td>
+                  <td className="px-3 py-2.5 text-gray-600 font-semibold text-xs">{team.game}</td>
+                  
+                  {/* Matches Input */}
+                  <td className="px-3 py-2.5 text-center">
+                    <input
+                      type="number"
+                      min="0"
+                      value={draft.matchesPlayed}
+                      onChange={(e) => handleInputChange(team._id, "matchesPlayed", e.target.value)}
+                      className="w-16 rounded border border-gray-200 bg-white px-2 py-1 text-center font-bold text-slate-900 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-xs shadow-sm"
+                    />
+                  </td>
+
+                  {/* Wins Input */}
+                  <td className="px-3 py-2.5 text-center">
+                    <input
+                      type="number"
+                      min="0"
+                      value={draft.wins}
+                      onChange={(e) => handleInputChange(team._id, "wins", e.target.value)}
+                      className="w-16 rounded border border-gray-200 bg-white px-2 py-1 text-center font-bold text-emerald-600 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-xs shadow-sm"
+                    />
+                  </td>
+
+                  {/* KD Ratio Input */}
+                  <td className="px-3 py-2.5 text-center">
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      placeholder="0.00"
+                      value={draft.kdRatio}
+                      onChange={(e) => handleInputChange(team._id, "kdRatio", e.target.value)}
+                      className="w-20 rounded border border-gray-200 bg-white px-2 py-1 text-center font-bold text-sky-600 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-xs shadow-sm"
+                    />
+                  </td>
+
+                  {/* Points Input */}
+                  <td className="px-3 py-2.5 text-center">
+                    <input
+                      type="number"
+                      min="0"
+                      value={draft.points}
+                      onChange={(e) => handleInputChange(team._id, "points", e.target.value)}
+                      className="w-20 rounded border border-gray-200 bg-white px-2 py-1 text-center font-bold text-red-600 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-xs shadow-sm"
+                    />
+                  </td>
+
+                  {/* Save Button */}
+                  <td className="px-3 py-2.5 text-center">
+                    <button
+                      onClick={() => handleSave(team)}
+                      disabled={isSaving}
+                      className="inline-flex items-center gap-1 rounded bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-3 py-1.5 shadow transition disabled:opacity-50"
+                    >
+                      {isSaving ? (
+                        <Loader2 size={12} className="animate-spin" />
+                      ) : (
+                        <Save size={12} />
+                      )}
+                      Save
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
             {loading && (
               <tr>
-                <td colSpan="6" className="py-12 text-center">
+                <td colSpan="8" className="py-12 text-center">
                   <Loader2 className="animate-spin mx-auto text-red-500 mb-2" size={20} />
                   <p className="text-gray-400 text-xs">Loading leaderboard...</p>
                 </td>
@@ -168,10 +256,8 @@ export default function AdminLeaderboardPage() {
             )}
             {!loading && filteredTeams.length === 0 && (
               <tr>
-                <td colSpan="6" className="py-16 text-center">
-                  <Plus size={32} className="mx-auto text-gray-300 mb-3" />
+                <td colSpan="8" className="py-16 text-center">
                   <p className="text-gray-400 text-sm font-medium">No teams found</p>
-                  <p className="text-gray-300 text-xs mt-1">Register teams first, then update their scores here</p>
                 </td>
               </tr>
             )}

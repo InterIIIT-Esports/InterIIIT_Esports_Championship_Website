@@ -71,7 +71,7 @@ export default function Navbar() {
   const links = [
     { name: "Home", href: "/" },
     { name: "Events", href: "/event-details" },
-    { name: "Leaderboard", href: "/leaderboard" },
+    { name: "Leaderboard", href: "/leaderboard/bgmi" },
     { name: "IEC Team", href: "/iec-team" },
     { name: "Colleges", href: "/participating-colleges" },
     { name: "Registration", href: "/register" },

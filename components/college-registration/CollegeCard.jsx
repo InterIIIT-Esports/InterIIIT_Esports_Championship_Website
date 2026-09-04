@@ -1,7 +1,7 @@
 import Image from "next/image";
-import { Building2, User, Mail, ShieldCheck, ClipboardList, ExternalLink } from "lucide-react";
+import { Building2, User, Mail, ShieldCheck, ClipboardList, ExternalLink, Trophy } from "lucide-react";
 
-export default function CollegeCard({ college }) {
+export default function CollegeCard({ college, onOpenTeams }) {
   return (
     <>
       {/* ── Mobile: Compact list row ── */}
@@ -34,16 +34,20 @@ export default function CollegeCard({ college }) {
               <User size={10} className="shrink-0 text-slate-400" />
               <span className="truncate">{college.coordinator_name}</span>
             </span>
-            <span className="flex items-center gap-1 truncate">
-              <Mail size={10} className="shrink-0 text-slate-400" />
-              <span className="truncate">{college.club_email}</span>
-            </span>
           </div>
         </div>
 
-        {/* Intra reg link */}
-        <div className="shrink-0">
-          {college.intra_registration_form ? (
+        {/* Action Buttons */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            onClick={() => onOpenTeams && onOpenTeams(college)}
+            className="flex items-center gap-1 rounded-lg bg-yellow-500/10 border border-yellow-500/30 px-2 py-1.5 text-[10px] font-bold text-yellow-700 hover:bg-yellow-500/20 transition-colors"
+            title="View Qualified Teams"
+          >
+            <Trophy size={12} className="text-yellow-600" />
+            Teams
+          </button>
+          {college.intra_registration_form && (
             <a
               href={college.intra_registration_form}
               target="_blank"
@@ -53,10 +57,6 @@ export default function CollegeCard({ college }) {
             >
               <ExternalLink size={14} />
             </a>
-          ) : (
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-50 text-slate-300" title="Intra Registrations — Coming Soon">
-              <ClipboardList size={14} />
-            </div>
           )}
         </div>
       </div>
@@ -156,6 +156,17 @@ export default function CollegeCard({ college }) {
                 </div>
               </>
             )}
+
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent transition-colors group-hover:via-red-100" />
+
+            <button
+              type="button"
+              onClick={() => onOpenTeams && onOpenTeams(college)}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-red-600 text-white py-2.5 text-xs font-bold uppercase tracking-wider transition-colors shadow-sm group-hover:shadow-md"
+            >
+              <Trophy size={14} className="text-yellow-400" />
+              Qualified Teams
+            </button>
             
           </div>
         </div>

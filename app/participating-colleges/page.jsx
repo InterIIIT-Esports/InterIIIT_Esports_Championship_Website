@@ -7,11 +7,19 @@ import { Search } from "lucide-react";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer";
 import CollegeCard from "@/components/college-registration/CollegeCard";
+import CollegeTeamsModal from "@/components/college-registration/CollegeTeamsModal";
+import TeamDetailsModal from "@/components/TeamDetailsModal";
 
 export default function ParticipatingCollegesPage() {
   const [colleges, setColleges] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  
+  const [selectedCollege, setSelectedCollege] = useState(null);
+  const [isCollegeModalOpen, setIsCollegeModalOpen] = useState(false);
+
+  const [selectedTeam, setSelectedTeam] = useState(null);
+  const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetchColleges() {
@@ -35,6 +43,16 @@ export default function ParticipatingCollegesPage() {
     c.college_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     c.club_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleOpenTeams = (college) => {
+    setSelectedCollege(college);
+    setIsCollegeModalOpen(true);
+  };
+
+  const handleSelectTeam = (team) => {
+    setSelectedTeam(team);
+    setIsTeamModalOpen(true);
+  };
 
   return (
     <main className="relative flex min-h-[100svh] flex-col overflow-hidden bg-white">
@@ -78,7 +96,7 @@ export default function ParticipatingCollegesPage() {
           ) : filteredColleges.length > 0 ? (
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
               {filteredColleges.map((college) => (
-                <CollegeCard key={college._id} college={college} />
+                <CollegeCard key={college._id} college={college} onOpenTeams={handleOpenTeams} />
               ))}
             </div>
           ) : (
@@ -111,6 +129,21 @@ export default function ParticipatingCollegesPage() {
             </Link>
           </div>
         </div>
+
+        {/* Modal for College Qualified Teams */}
+        <CollegeTeamsModal
+          isOpen={isCollegeModalOpen}
+          onClose={() => setIsCollegeModalOpen(false)}
+          college={selectedCollege}
+          onSelectTeam={handleSelectTeam}
+        />
+
+        {/* Modal for Team Details */}
+        <TeamDetailsModal
+          isOpen={isTeamModalOpen}
+          onClose={() => setIsTeamModalOpen(false)}
+          team={selectedTeam}
+        />
 
         <Footer />
       </div>

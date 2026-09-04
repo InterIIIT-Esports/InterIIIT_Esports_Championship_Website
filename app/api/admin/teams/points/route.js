@@ -11,15 +11,24 @@ export async function PATCH(req) {
     await requireAdmin(req);
     await dbConnect();
 
-    const { teamId, points, matchesPlayed } = await req.json();
+    const { teamId, points, matchesPlayed, wins, kills, deaths, kdRatio } = await req.json();
 
     if (!teamId || points === undefined || matchesPlayed === undefined) {
       return Response.json({ success: false, error: "Missing required fields" }, { status: 400 });
     }
 
+    const updateFields = {
+      points: Number(points),
+      matchesPlayed: Number(matchesPlayed),
+    };
+    if (wins !== undefined) updateFields.wins = Number(wins);
+    if (kills !== undefined) updateFields.kills = Number(kills);
+    if (deaths !== undefined) updateFields.deaths = Number(deaths);
+    if (kdRatio !== undefined) updateFields.kdRatio = Number(kdRatio);
+
     const team = await Team.findByIdAndUpdate(
       teamId,
-      { $set: { points: Number(points), matchesPlayed: Number(matchesPlayed) } },
+      { $set: updateFields },
       { new: true }
     ).lean();
 
