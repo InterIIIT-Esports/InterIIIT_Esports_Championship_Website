@@ -191,9 +191,9 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
           ) : (
             <div className="space-y-4">
               <div className="bg-white/[0.02] border border-white/10 rounded-xl sm:rounded-2xl overflow-hidden">
-                <div className="w-full overflow-x-auto overscroll-contain">
+                <div className="w-full max-h-[70vh] overflow-auto overscroll-contain">
                   <table className="w-full text-left" style={{ minWidth: "600px" }}>
-                    <thead className="bg-white/5 text-[10px] sm:text-xs uppercase tracking-wider text-slate-400 border-b border-white/10">
+                    <thead className="sticky top-0 z-10 bg-slate-950 text-[10px] sm:text-xs uppercase tracking-wider text-slate-400 border-b border-white/10">
                       <tr>
                         <th className="w-10 sm:w-16 px-1 sm:px-4 py-2.5 sm:py-4 font-semibold text-center">Rank</th>
                         <th className="px-2 sm:px-4 py-2.5 sm:py-4 font-semibold">Team</th>
