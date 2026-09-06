@@ -50,13 +50,55 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
     fetchLeaderboard(game);
   }, [game]);
 
+  const getStagePriority = (team) => {
+    const tag = (team.tag || "").toLowerCase().trim();
+    const isEliminated = team.isEliminated;
+
+    let priority = 100;
+    if (tag.includes("champion") || tag.includes("winner") || tag === "top 1" || tag === "1st") priority = 1;
+    else if (tag.includes("finalist") || tag.includes("runner") || tag === "top 2" || tag === "2nd") priority = 2;
+    else if (tag.includes("semi") || tag === "top 4") priority = 3;
+    else if (tag === "top 8") priority = 4;
+    else if (tag === "top 16") priority = 5;
+    else if (tag === "top 32") priority = 6;
+    else if (tag) priority = 10;
+
+    if (!isEliminated) {
+      if (priority === 100) priority = 20;
+    } else {
+      priority += 50;
+    }
+    return priority;
+  };
+
+  const sortLeaderboardTeams = (teamList, currentGame) => {
+    const isValorant = currentGame === "VALORANT";
+    return [...teamList].sort((a, b) => {
+      const priorityA = getStagePriority(a);
+      const priorityB = getStagePriority(b);
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+
+      if (isValorant) {
+        if ((b.kills || 0) !== (a.kills || 0)) return (b.kills || 0) - (a.kills || 0);
+        if ((b.wins || 0) !== (a.wins || 0)) return (b.wins || 0) - (a.wins || 0);
+        return (a.matchesPlayed || 0) - (b.matchesPlayed || 0);
+      }
+
+      if ((b.points || 0) !== (a.points || 0)) return (b.points || 0) - (a.points || 0);
+      if ((b.kills || 0) !== (a.kills || 0)) return (b.kills || 0) - (a.kills || 0);
+      return (b.wins || 0) - (a.wins || 0);
+    });
+  };
+
   const fetchLeaderboard = async (currentGame) => {
     setLoading(true);
     try {
       const res = await fetch(`/api/public/teams?game=${currentGame}`);
       const data = await res.json();
       if (data.success) {
-        setTeams(data.teams.sort((a, b) => (b.points || 0) - (a.points || 0)));
+        setTeams(sortLeaderboardTeams(data.teams, currentGame));
       }
     } catch (err) {
       console.error(err);
@@ -126,28 +168,34 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
             <div className="space-y-4">
               <div className="bg-white/[0.02] border border-white/10 rounded-xl sm:rounded-2xl overflow-hidden backdrop-blur-sm">
                 <div className="w-full overflow-x-auto">
-                  <table className="w-full text-left" style={{ minWidth: '540px' }}>
+                  <table className="w-full text-left" style={{ minWidth: '600px' }}>
                     <thead className="bg-white/5 text-[10px] sm:text-xs uppercase tracking-wider text-slate-400 border-b border-white/10">
                       <tr>
                         <th className="w-10 sm:w-16 px-1 sm:px-4 py-2.5 sm:py-4 font-semibold text-center">Rank</th>
                         <th className="px-2 sm:px-4 py-2.5 sm:py-4 font-semibold">Team</th>
-                        <th className="w-12 sm:w-20 px-1 sm:px-3 py-2.5 sm:py-4 font-semibold text-center">MP</th>
-                        <th className="w-12 sm:w-20 px-1 sm:px-3 py-2.5 sm:py-4 font-semibold text-center">W</th>
-                        <th className="w-14 sm:w-20 px-1 sm:px-3 py-2.5 sm:py-4 font-semibold text-center">K/D</th>
-                        <th className="w-14 sm:w-24 px-2 sm:px-4 py-2.5 sm:py-4 font-semibold text-right">Pts</th>
+                        <th className="w-24 sm:w-32 px-2 sm:px-3 py-2.5 sm:py-4 font-semibold text-center">Status</th>
+                        {game !== "VALORANT" && (
+                          <>
+                            <th className="w-12 sm:w-20 px-1 sm:px-3 py-2.5 sm:py-4 font-semibold text-center">MP</th>
+                            <th className="w-12 sm:w-20 px-1 sm:px-3 py-2.5 sm:py-4 font-semibold text-center">W</th>
+                            <th className="w-14 sm:w-20 px-1 sm:px-3 py-2.5 sm:py-4 font-semibold text-center">Kills</th>
+                            <th className="w-14 sm:w-24 px-2 sm:px-4 py-2.5 sm:py-4 font-semibold text-right">Pts</th>
+                          </>
+                        )}
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
                       {teams.map((team, index) => {
+                        const isValorant = game === "VALORANT";
                         const hasPoints = (team.points || 0) > 0;
-                        const showPodiumIcon = hasPoints && index < 3;
+                        const showPodiumIcon = !isValorant && hasPoints && index < 3;
                         const leader = team.leaderName || team.leaderId?.name;
 
                         return (
                           <tr 
                             key={team._id} 
                             onClick={() => { setSelectedTeam(team); setIsModalOpen(true); }}
-                            className={`transition-all hover:bg-white/[0.06] cursor-pointer group ${showPodiumIcon ? 'bg-gradient-to-r from-red-900/10 to-transparent' : ''}`}
+                            className={`transition-all hover:bg-white/[0.06] cursor-pointer group ${team.isEliminated ? 'bg-red-950/20' : showPodiumIcon ? 'bg-gradient-to-r from-red-900/10 to-transparent' : ''}`}
                           >
                             <td className="px-1 sm:px-4 py-2.5 sm:py-3.5 text-center">
                               {showPodiumIcon ? (
@@ -189,24 +237,51 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
                                 </div>
                               </div>
                             </td>
-                            <td className="px-1 sm:px-3 py-2.5 sm:py-3.5 text-center font-semibold text-slate-300 text-xs sm:text-base">
-                              {team.matchesPlayed || 0}
+
+                            {/* Status Column */}
+                            <td className="px-2 sm:px-3 py-2.5 sm:py-3.5 text-center">
+                              {team.isEliminated ? (
+                                <div className="flex flex-col items-center gap-0.5">
+                                  <span className="inline-block px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-bold bg-red-950/90 text-red-400 border border-red-800/80 uppercase tracking-wider">
+                                    Eliminated
+                                  </span>
+                                  {team.eliminationNote && (
+                                    <span className="text-[9px] sm:text-[10px] text-red-400/80 font-medium italic">
+                                      {team.eliminationNote}
+                                    </span>
+                                  )}
+                                </div>
+                              ) : team.tag ? (
+                                <span className="inline-block px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-extrabold uppercase bg-red-600/20 text-red-400 border border-red-500/30 tracking-wider">
+                                  {team.tag}
+                                </span>
+                              ) : (
+                                <span className="text-slate-600 text-xs">—</span>
+                              )}
                             </td>
-                            <td className="px-1 sm:px-3 py-2.5 sm:py-3.5 text-center font-semibold text-emerald-400 text-xs sm:text-base">
-                              {team.wins || 0}
-                            </td>
-                            <td className="px-1 sm:px-3 py-2.5 sm:py-3.5 text-center font-semibold text-sky-400 text-xs sm:text-base">
-                              {getKD(team)}
-                            </td>
-                            <td className="px-2 sm:px-4 py-2.5 sm:py-3.5 text-right font-display text-sm sm:text-xl font-bold text-red-500">
-                              {team.points || 0}
-                            </td>
+
+                            {game !== "VALORANT" && (
+                              <>
+                                <td className="px-1 sm:px-3 py-2.5 sm:py-3.5 text-center font-semibold text-slate-300 text-xs sm:text-base">
+                                  {team.matchesPlayed || 0}
+                                </td>
+                                <td className="px-1 sm:px-3 py-2.5 sm:py-3.5 text-center font-semibold text-emerald-400 text-xs sm:text-base">
+                                  {team.wins || 0}
+                                </td>
+                                <td className="px-1 sm:px-3 py-2.5 sm:py-3.5 text-center font-semibold text-sky-400 text-xs sm:text-base">
+                                  {team.kills || 0}
+                                </td>
+                                <td className="px-2 sm:px-4 py-2.5 sm:py-3.5 text-right font-display text-sm sm:text-xl font-bold text-red-500">
+                                  {team.points || 0}
+                                </td>
+                              </>
+                            )}
                           </tr>
                         );
                       })}
                       {teams.length === 0 && (
                         <tr>
-                          <td colSpan="6" className="px-4 py-12 sm:px-6 sm:py-16 text-center text-xs sm:text-sm text-slate-500">
+                          <td colSpan={game === "VALORANT" ? "3" : "7"} className="px-4 py-12 sm:px-6 sm:py-16 text-center text-xs sm:text-sm text-slate-500">
                             No teams registered or ranked for this game yet.
                           </td>
                         </tr>

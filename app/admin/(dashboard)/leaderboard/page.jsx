@@ -34,8 +34,11 @@ export default function AdminLeaderboardPage() {
           initialDrafts[t._id] = {
             matchesPlayed: t.matchesPlayed ?? 0,
             wins: t.wins ?? 0,
-            kdRatio: t.kdRatio ?? 0,
+            kills: t.kills ?? 0,
             points: t.points ?? 0,
+            tag: t.tag ?? "",
+            isEliminated: t.isEliminated ?? false,
+            eliminationNote: t.eliminationNote ?? "",
           };
         });
         setDrafts(initialDrafts);
@@ -62,8 +65,11 @@ export default function AdminLeaderboardPage() {
     const draft = drafts[teamId] || {
       matchesPlayed: team.matchesPlayed || 0,
       wins: team.wins || 0,
-      kdRatio: team.kdRatio || 0,
+      kills: team.kills || 0,
       points: team.points || 0,
+      tag: team.tag || "",
+      isEliminated: team.isEliminated || false,
+      eliminationNote: team.eliminationNote || "",
     };
 
     setSavingMap(prev => ({ ...prev, [teamId]: true }));
@@ -78,8 +84,11 @@ export default function AdminLeaderboardPage() {
           teamId,
           matchesPlayed: Number(draft.matchesPlayed || 0),
           wins: Number(draft.wins || 0),
-          kdRatio: Number(draft.kdRatio || 0),
+          kills: Number(draft.kills || 0),
           points: Number(draft.points || 0),
+          tag: draft.tag || "",
+          isEliminated: Boolean(draft.isEliminated),
+          eliminationNote: draft.eliminationNote || "",
         })
       });
 
@@ -97,10 +106,46 @@ export default function AdminLeaderboardPage() {
     }
   };
 
+  const getStagePriority = (team) => {
+    const tag = (team.tag || "").toLowerCase().trim();
+    const isEliminated = team.isEliminated;
+
+    let priority = 100;
+    if (tag.includes("champion") || tag.includes("winner") || tag === "top 1" || tag === "1st") priority = 1;
+    else if (tag.includes("finalist") || tag.includes("runner") || tag === "top 2" || tag === "2nd") priority = 2;
+    else if (tag.includes("semi") || tag === "top 4") priority = 3;
+    else if (tag === "top 8") priority = 4;
+    else if (tag === "top 16") priority = 5;
+    else if (tag === "top 32") priority = 6;
+    else if (tag) priority = 10;
+
+    if (!isEliminated) {
+      if (priority === 100) priority = 20;
+    } else {
+      priority += 50;
+    }
+    return priority;
+  };
+
   const filteredTeams = teams.filter(t => 
     (gameFilter === "ALL" || t.game === gameFilter) &&
     (t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.college.toLowerCase().includes(searchQuery.toLowerCase()))
-  ).sort((a, b) => (b.points || 0) - (a.points || 0));
+  ).sort((a, b) => {
+    const priorityA = getStagePriority(a);
+    const priorityB = getStagePriority(b);
+    if (priorityA !== priorityB) {
+      return priorityA - priorityB;
+    }
+    if (a.game === "VALORANT") {
+      if ((b.kills || 0) !== (a.kills || 0)) return (b.kills || 0) - (a.kills || 0);
+      if ((b.wins || 0) !== (a.wins || 0)) return (b.wins || 0) - (a.wins || 0);
+      return (a.matchesPlayed || 0) - (b.matchesPlayed || 0);
+    }
+    if ((b.points || 0) !== (a.points || 0)) return (b.points || 0) - (a.points || 0);
+    return (b.kills || 0) - (a.kills || 0);
+  });
+
+  const TAG_OPTIONS = ["", "Top 16", "Top 8", "Top 4", "Top 2", "Semi-Finalist", "Finalist", "Champion"];
 
   return (
     <div className="space-y-4">
@@ -109,7 +154,7 @@ export default function AdminLeaderboardPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-base font-bold text-slate-900 tracking-tight">Leaderboard Management</h2>
-          <p className="text-xs text-gray-500 mt-0.5">Enter team stats and click Save for each team.</p>
+          <p className="text-xs text-gray-500 mt-0.5">Enter team stats, stage tags, and elimination status, then click Save.</p>
         </div>
         <div className="flex gap-3 items-center flex-wrap">
           <select
@@ -150,17 +195,19 @@ export default function AdminLeaderboardPage() {
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-x-auto">
-        <table className="w-full text-left text-sm text-gray-500 min-w-[700px]">
+        <table className="w-full text-left text-sm text-gray-500 min-w-[950px]">
           <thead className="bg-gray-50 border-b border-gray-200 text-[10px] uppercase text-gray-400">
             <tr>
-              <th className="px-3 py-2.5 font-semibold tracking-wider w-12">Rank</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider w-10">Rank</th>
               <th className="px-3 py-2.5 font-semibold tracking-wider">Team</th>
-              <th className="px-3 py-2.5 font-semibold tracking-wider w-24">Game</th>
-              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-24">Matches</th>
-              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-24">Wins</th>
-              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-28">KD Ratio</th>
-              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-28">Points</th>
-              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-24">Action</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider w-20">Game</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider w-28">Stage Tag</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-20">Matches</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-20">Wins</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-20">Kills</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-20">Points</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-48">Elimination Status</th>
+              <th className="px-3 py-2.5 font-semibold tracking-wider text-center w-20">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -168,19 +215,57 @@ export default function AdminLeaderboardPage() {
               const draft = drafts[team._id] || {
                 matchesPlayed: team.matchesPlayed || 0,
                 wins: team.wins || 0,
-                kdRatio: team.kdRatio || 0,
+                kills: team.kills || 0,
                 points: team.points || 0,
+                tag: team.tag || "",
+                isEliminated: team.isEliminated || false,
+                eliminationNote: team.eliminationNote || "",
               };
               const isSaving = savingMap[team._id];
+              const isValorant = team.game === "VALORANT";
 
               return (
-                <tr key={team._id} className="transition-colors hover:bg-gray-50">
+                <tr key={team._id} className={`transition-colors ${draft.isEliminated ? 'bg-red-50/40 hover:bg-red-50/80' : 'hover:bg-gray-50'}`}>
                   <td className="px-3 py-2.5 font-bold text-slate-900 text-center">#{index + 1}</td>
                   <td className="px-3 py-2.5">
                     <p className="font-bold text-slate-900 text-sm">{team.name}</p>
                     <p className="text-[10px] text-gray-400">{team.college}</p>
                   </td>
                   <td className="px-3 py-2.5 text-gray-600 font-semibold text-xs">{team.game}</td>
+
+                  {/* Tag Input */}
+                  <td className="px-3 py-2.5">
+                    <div className="flex flex-col gap-1">
+                      <select
+                        value={TAG_OPTIONS.includes(draft.tag) ? draft.tag : "CUSTOM"}
+                        onChange={(e) => {
+                          if (e.target.value !== "CUSTOM") {
+                            handleInputChange(team._id, "tag", e.target.value);
+                          }
+                        }}
+                        className="w-full rounded border border-gray-200 bg-white px-1.5 py-1 text-slate-900 font-medium text-xs outline-none focus:border-red-500 shadow-sm"
+                      >
+                        <option value="">No Tag</option>
+                        <option value="Top 16">Top 16</option>
+                        <option value="Top 8">Top 8</option>
+                        <option value="Top 4">Top 4</option>
+                        <option value="Top 2">Top 2</option>
+                        <option value="Semi-Finalist">Semi-Finalist</option>
+                        <option value="Finalist">Finalist</option>
+                        <option value="Champion">Champion</option>
+                        <option value="CUSTOM">Custom Tag...</option>
+                      </select>
+                      {(!TAG_OPTIONS.includes(draft.tag) || draft.tag === "CUSTOM") && (
+                        <input
+                          type="text"
+                          placeholder="e.g. Top 16"
+                          value={draft.tag === "CUSTOM" ? "" : draft.tag}
+                          onChange={(e) => handleInputChange(team._id, "tag", e.target.value)}
+                          className="w-full rounded border border-gray-200 bg-white px-2 py-0.5 text-xs text-slate-900 outline-none focus:border-red-500"
+                        />
+                      )}
+                    </div>
+                  </td>
                   
                   {/* Matches Input */}
                   <td className="px-3 py-2.5 text-center">
@@ -189,7 +274,7 @@ export default function AdminLeaderboardPage() {
                       min="0"
                       value={draft.matchesPlayed}
                       onChange={(e) => handleInputChange(team._id, "matchesPlayed", e.target.value)}
-                      className="w-16 rounded border border-gray-200 bg-white px-2 py-1 text-center font-bold text-slate-900 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-xs shadow-sm"
+                      className="w-14 rounded border border-gray-200 bg-white px-2 py-1 text-center font-bold text-slate-900 outline-none focus:border-red-500 text-xs shadow-sm"
                     />
                   </td>
 
@@ -200,32 +285,60 @@ export default function AdminLeaderboardPage() {
                       min="0"
                       value={draft.wins}
                       onChange={(e) => handleInputChange(team._id, "wins", e.target.value)}
-                      className="w-16 rounded border border-gray-200 bg-white px-2 py-1 text-center font-bold text-emerald-600 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-xs shadow-sm"
+                      className="w-14 rounded border border-gray-200 bg-white px-2 py-1 text-center font-bold text-emerald-600 outline-none focus:border-red-500 text-xs shadow-sm"
                     />
                   </td>
 
-                  {/* KD Ratio Input */}
+                  {/* Kills Input */}
                   <td className="px-3 py-2.5 text-center">
                     <input
                       type="number"
-                      step="0.01"
                       min="0"
-                      placeholder="0.00"
-                      value={draft.kdRatio}
-                      onChange={(e) => handleInputChange(team._id, "kdRatio", e.target.value)}
-                      className="w-20 rounded border border-gray-200 bg-white px-2 py-1 text-center font-bold text-sky-600 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-xs shadow-sm"
+                      value={draft.kills}
+                      onChange={(e) => handleInputChange(team._id, "kills", e.target.value)}
+                      className="w-16 rounded border border-gray-200 bg-white px-2 py-1 text-center font-bold text-sky-600 outline-none focus:border-red-500 text-xs shadow-sm"
                     />
                   </td>
 
                   {/* Points Input */}
                   <td className="px-3 py-2.5 text-center">
-                    <input
-                      type="number"
-                      min="0"
-                      value={draft.points}
-                      onChange={(e) => handleInputChange(team._id, "points", e.target.value)}
-                      className="w-20 rounded border border-gray-200 bg-white px-2 py-1 text-center font-bold text-red-600 outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 text-xs shadow-sm"
-                    />
+                    {isValorant ? (
+                      <span className="text-[10px] font-bold text-gray-400 bg-gray-100 px-2 py-1 rounded italic">
+                        No Pts (Val)
+                      </span>
+                    ) : (
+                      <input
+                        type="number"
+                        min="0"
+                        value={draft.points}
+                        onChange={(e) => handleInputChange(team._id, "points", e.target.value)}
+                        className="w-16 rounded border border-gray-200 bg-white px-2 py-1 text-center font-bold text-red-600 outline-none focus:border-red-500 text-xs shadow-sm"
+                      />
+                    )}
+                  </td>
+
+                  {/* Elimination Status Input */}
+                  <td className="px-3 py-2.5">
+                    <div className="flex items-center gap-2">
+                      <label className="inline-flex items-center gap-1.5 cursor-pointer shrink-0">
+                        <input
+                          type="checkbox"
+                          checked={draft.isEliminated}
+                          onChange={(e) => handleInputChange(team._id, "isEliminated", e.target.checked)}
+                          className="h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                        />
+                        <span className={`text-xs font-bold ${draft.isEliminated ? 'text-red-600' : 'text-gray-500'}`}>
+                          Eliminated
+                        </span>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Note (e.g. in round 3)"
+                        value={draft.eliminationNote}
+                        onChange={(e) => handleInputChange(team._id, "eliminationNote", e.target.value)}
+                        className="w-full rounded border border-gray-200 bg-white px-2 py-1 text-xs text-slate-900 outline-none focus:border-red-500 shadow-sm"
+                      />
+                    </div>
                   </td>
 
                   {/* Save Button */}
@@ -248,7 +361,7 @@ export default function AdminLeaderboardPage() {
             })}
             {loading && (
               <tr>
-                <td colSpan="8" className="py-12 text-center">
+                <td colSpan="10" className="py-12 text-center">
                   <Loader2 className="animate-spin mx-auto text-red-500 mb-2" size={20} />
                   <p className="text-gray-400 text-xs">Loading leaderboard...</p>
                 </td>
@@ -256,7 +369,7 @@ export default function AdminLeaderboardPage() {
             )}
             {!loading && filteredTeams.length === 0 && (
               <tr>
-                <td colSpan="8" className="py-16 text-center">
+                <td colSpan="10" className="py-16 text-center">
                   <p className="text-gray-400 text-sm font-medium">No teams found</p>
                 </td>
               </tr>

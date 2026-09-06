@@ -79,6 +79,16 @@ export default function TeamDetailsModal({ isOpen, onClose, team }) {
                 <span className={`rounded border px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider ${gameBadgeStyle}`}>
                   {team.game}
                 </span>
+                {team.tag && (
+                  <span className="rounded bg-red-600/20 text-red-400 border border-red-500/40 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider">
+                    {team.tag}
+                  </span>
+                )}
+                {team.isEliminated && (
+                  <span className="inline-flex items-center gap-1 rounded bg-red-950/90 text-red-400 border border-red-800/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                    Eliminated {team.eliminationNote ? `(${team.eliminationNote})` : ''}
+                  </span>
+                )}
                 {team.isRegistered && (
                   <span className="inline-flex items-center gap-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
                     <Shield size={10} /> Registered Squad
@@ -99,10 +109,10 @@ export default function TeamDetailsModal({ isOpen, onClose, team }) {
         <div className="grid grid-cols-4 divide-x divide-white/10 border-b border-white/10 bg-white/[0.02]">
           <div className="p-2.5 text-center">
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-center gap-1">
-              <Trophy size={11} className="text-yellow-400" /> Pts
+              <Trophy size={11} className="text-yellow-400" /> {team.game === "VALORANT" ? "Stage" : "Pts"}
             </p>
-            <p className="text-base sm:text-lg font-bold font-display text-red-500 mt-0.5">
-              {team.points || 0}
+            <p className="text-base sm:text-lg font-bold font-display text-red-500 mt-0.5 truncate">
+              {team.game === "VALORANT" ? (team.tag || "Participant") : (team.points || 0)}
             </p>
           </div>
           <div className="p-2.5 text-center">
@@ -123,10 +133,10 @@ export default function TeamDetailsModal({ isOpen, onClose, team }) {
           </div>
           <div className="p-2.5 text-center">
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-center gap-1">
-              K/D
+              Kills
             </p>
             <p className="text-base sm:text-lg font-bold font-display text-sky-400 mt-0.5">
-              {team.kdRatio ? Number(team.kdRatio).toFixed(2) : (team.deaths ? ((team.kills || 0) / team.deaths).toFixed(2) : (team.kills || 0 ? (team.kills || 0).toFixed(1) : "—"))}
+              {team.kills || 0}
             </p>
           </div>
         </div>

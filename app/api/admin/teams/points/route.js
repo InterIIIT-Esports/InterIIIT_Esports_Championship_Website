@@ -11,20 +11,22 @@ export async function PATCH(req) {
     await requireAdmin(req);
     await dbConnect();
 
-    const { teamId, points, matchesPlayed, wins, kills, deaths, kdRatio } = await req.json();
+    const { teamId, points, matchesPlayed, wins, kills, deaths, kdRatio, tag, isEliminated, eliminationNote } = await req.json();
 
-    if (!teamId || points === undefined || matchesPlayed === undefined) {
-      return Response.json({ success: false, error: "Missing required fields" }, { status: 400 });
+    if (!teamId) {
+      return Response.json({ success: false, error: "Missing required teamId" }, { status: 400 });
     }
 
-    const updateFields = {
-      points: Number(points),
-      matchesPlayed: Number(matchesPlayed),
-    };
+    const updateFields = {};
+    if (points !== undefined) updateFields.points = Number(points);
+    if (matchesPlayed !== undefined) updateFields.matchesPlayed = Number(matchesPlayed);
     if (wins !== undefined) updateFields.wins = Number(wins);
     if (kills !== undefined) updateFields.kills = Number(kills);
     if (deaths !== undefined) updateFields.deaths = Number(deaths);
     if (kdRatio !== undefined) updateFields.kdRatio = Number(kdRatio);
+    if (tag !== undefined) updateFields.tag = String(tag).trim();
+    if (isEliminated !== undefined) updateFields.isEliminated = Boolean(isEliminated);
+    if (eliminationNote !== undefined) updateFields.eliminationNote = String(eliminationNote).trim();
 
     const team = await Team.findByIdAndUpdate(
       teamId,
