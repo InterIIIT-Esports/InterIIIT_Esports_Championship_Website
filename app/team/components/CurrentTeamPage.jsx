@@ -230,13 +230,23 @@ const handleRemoveMember = async (memberId) => {
           </h2>
 
           <div className="mt-4 rounded-xl bg-[#242424] p-5">
-            <p className="text-xl text-white">
-              👑 {team.leaderId.name}
-            </p>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <p className="text-xl text-white">
+                  👑 {team.leaderId.name}
+                </p>
 
-            <p className="text-gray-400">
-              {team.leaderId.collegeEmail}
-            </p>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center rounded-full bg-red-600/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-red-300">
+                    {team.college}
+                  </span>
+
+                  <span className="text-sm text-gray-400 break-all">
+                    {team.leaderId.collegeEmail}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

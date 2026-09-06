@@ -229,6 +229,11 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
                                   <p className="font-bold text-white text-xs sm:text-base tracking-wide group-hover:text-red-400 transition-colors truncate">
                                     {team.name}
                                   </p>
+                                  {team.college && (
+                                    <p className="text-[10px] sm:text-xs text-red-300/90 mt-0.5 truncate" title={team.college}>
+                                      {team.college}
+                                    </p>
+                                  )}
                                   {leader && (
                                     <p className="text-[10px] sm:text-xs text-slate-400 mt-0.5 truncate">
                                       Leader: <span className="text-slate-300 font-medium">{leader}</span>
@@ -299,4 +304,3 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
     </>
   );
 }
-
