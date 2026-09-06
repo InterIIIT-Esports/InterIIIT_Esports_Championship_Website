@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { Fragment, useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Trophy, Medal } from "lucide-react";
 import Navbar from "@/components/Navbar/Navbar";
@@ -122,6 +122,14 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
     return "text-slate-500 bg-white/5 border-white/10";
   };
 
+  const getStageSection = (team) => {
+    if (team.isEliminated) return "eliminated";
+    const tag = (team.tag || "").toLowerCase().trim();
+    if (tag.includes("top 8")) return "top8";
+    if (tag.includes("top 16")) return "top16";
+    return "other";
+  };
+
   const getKD = (team) => {
     if (team.kdRatio !== undefined && team.kdRatio !== null && team.kdRatio > 0) {
       return Number(team.kdRatio).toFixed(2);
@@ -131,6 +139,22 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
     if (d === 0) return k > 0 ? k.toFixed(1) : "—";
     return (k / d).toFixed(2);
   };
+
+  const rankByTeamId = new Map(teams.map((team, index) => [team._id, index]));
+  const leaderboardSections = [
+    { key: "top8", title: "Top 8", description: "Qualified for the next stage", headerClass: "bg-amber-500/15 border-amber-400/30 text-amber-300", rowClass: "bg-amber-950/10" },
+    { key: "top16", title: "Top 16", description: "Qualified teams", headerClass: "bg-sky-500/15 border-sky-400/30 text-sky-300", rowClass: "bg-sky-950/10" },
+    { key: "other", title: "Standings", description: "Current team rankings", headerClass: "bg-white/5 border-white/10 text-slate-300", rowClass: "" },
+    { key: "eliminated", title: "Eliminated", description: "Teams out of the competition", headerClass: "bg-red-500/15 border-red-400/30 text-red-300", rowClass: "bg-red-950/20" },
+  ].map((section) => ({
+    ...section,
+    teams: teams.filter((team) => {
+      const stage = getStageSection(team);
+      if (stage !== "other") return stage === section.key;
+
+      return section.key === "other";
+    }),
+  })).filter((section) => section.teams.length > 0);
 
   return (
     <>
@@ -166,14 +190,15 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="bg-white/[0.02] border border-white/10 rounded-xl sm:rounded-2xl overflow-hidden backdrop-blur-sm">
-                <div className="w-full overflow-x-auto">
-                  <table className="w-full text-left" style={{ minWidth: '600px' }}>
+              <div className="bg-white/[0.02] border border-white/10 rounded-xl sm:rounded-2xl overflow-hidden">
+                <div className="w-full overflow-hidden">
+                  <table className="w-full min-w-0 table-fixed text-left">
                     <thead className="bg-white/5 text-[10px] sm:text-xs uppercase tracking-wider text-slate-400 border-b border-white/10">
                       <tr>
                         <th className="w-10 sm:w-16 px-1 sm:px-4 py-2.5 sm:py-4 font-semibold text-center">Rank</th>
                         <th className="px-2 sm:px-4 py-2.5 sm:py-4 font-semibold">Team</th>
-                        <th className="w-24 sm:w-32 px-2 sm:px-3 py-2.5 sm:py-4 font-semibold text-center">Status</th>
+                        <th className="min-w-32 px-2 sm:px-4 py-2.5 sm:py-4 font-semibold">College</th>
+                        <th className="w-24 sm:w-32 px-2 sm:px-3 py-2.5 sm:py-4 font-semibold text-center">Stage</th>
                         {game !== "VALORANT" && (
                           <>
                             <th className="w-12 sm:w-20 px-1 sm:px-3 py-2.5 sm:py-4 font-semibold text-center">MP</th>
@@ -185,7 +210,18 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
-                      {teams.map((team, index) => {
+                      {leaderboardSections.map((section) => (
+                        <Fragment key={section.key}>
+                          <tr key={`${section.key}-header`} className={`border-y ${section.headerClass}`}>
+                            <td colSpan={game === "VALORANT" ? "4" : "8"} className="px-3 sm:px-4 py-2.5 sm:py-3">
+                              <div className="flex items-center justify-between gap-3">
+                                <span className="text-xs sm:text-sm font-bold uppercase tracking-wider">{section.title}</span>
+                                <span className="text-[10px] sm:text-xs opacity-80">{section.description} · {section.teams.length}</span>
+                              </div>
+                            </td>
+                          </tr>
+                          {section.teams.map((team) => {
+                            const index = rankByTeamId.get(team._id) ?? 0;
                         const isValorant = game === "VALORANT";
                         const hasPoints = (team.points || 0) > 0;
                         const showPodiumIcon = !isValorant && hasPoints && index < 3;
@@ -195,7 +231,7 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
                           <tr 
                             key={team._id} 
                             onClick={() => { setSelectedTeam(team); setIsModalOpen(true); }}
-                            className={`transition-all hover:bg-white/[0.06] cursor-pointer group ${team.isEliminated ? 'bg-red-950/20' : showPodiumIcon ? 'bg-gradient-to-r from-red-900/10 to-transparent' : ''}`}
+                            className={`transition-all hover:bg-white/[0.06] cursor-pointer group ${section.rowClass} ${showPodiumIcon ? 'bg-gradient-to-r from-red-900/10 to-transparent' : ''}`}
                           >
                             <td className="px-1 sm:px-4 py-2.5 sm:py-3.5 text-center">
                               {showPodiumIcon ? (
@@ -216,6 +252,9 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
                                     <img
                                       src={team.collegeLogo}
                                       alt={team.college}
+                                      loading="eager"
+                                      decoding="async"
+                                      fetchPriority="high"
                                       className="w-full h-full object-cover rounded-full"
                                       style={{ borderRadius: '50%', clipPath: 'circle(50% at 50% 50%)', WebkitClipPath: 'circle(50% at 50% 50%)' }}
                                     />
@@ -229,11 +268,6 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
                                   <p className="font-bold text-white text-xs sm:text-base tracking-wide group-hover:text-red-400 transition-colors truncate">
                                     {team.name}
                                   </p>
-                                  {team.college && (
-                                    <p className="text-[10px] sm:text-xs text-red-300/90 mt-0.5 truncate" title={team.college}>
-                                      {team.college}
-                                    </p>
-                                  )}
                                   {leader && (
                                     <p className="text-[10px] sm:text-xs text-slate-400 mt-0.5 truncate">
                                       Leader: <span className="text-slate-300 font-medium">{leader}</span>
@@ -243,7 +277,13 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
                               </div>
                             </td>
 
-                            {/* Status Column */}
+                            <td className="px-2 sm:px-4 py-2.5 sm:py-3.5 min-w-0 max-w-44">
+                              <p className="text-[10px] sm:text-xs text-slate-300 truncate" title={team.college}>
+                                {team.college || "—"}
+                              </p>
+                            </td>
+
+                            {/* Stage Column */}
                             <td className="px-2 sm:px-3 py-2.5 sm:py-3.5 text-center">
                               {team.isEliminated ? (
                                 <div className="flex flex-col items-center gap-0.5">
@@ -257,7 +297,7 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
                                   )}
                                 </div>
                               ) : team.tag ? (
-                                <span className="inline-block px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-extrabold uppercase bg-red-600/20 text-red-400 border border-red-500/30 tracking-wider">
+                                <span className={`inline-block px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider ${section.key === "top8" ? "bg-amber-500/20 text-amber-300 border border-amber-400/40" : section.key === "top16" ? "bg-sky-500/20 text-sky-300 border border-sky-400/40" : "bg-red-600/20 text-red-400 border border-red-500/30"}`}>
                                   {team.tag}
                                 </span>
                               ) : (
@@ -282,11 +322,13 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
                               </>
                             )}
                           </tr>
-                        );
-                      })}
+                          );
+                        })}
+                        </Fragment>
+                      ))}
                       {teams.length === 0 && (
                         <tr>
-                          <td colSpan={game === "VALORANT" ? "3" : "7"} className="px-4 py-12 sm:px-6 sm:py-16 text-center text-xs sm:text-sm text-slate-500">
+                          <td colSpan={game === "VALORANT" ? "4" : "8"} className="px-4 py-12 sm:px-6 sm:py-16 text-center text-xs sm:text-sm text-slate-500">
                             No teams registered or ranked for this game yet.
                           </td>
                         </tr>
