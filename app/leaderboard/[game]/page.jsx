@@ -37,6 +37,8 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
 
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
   const [game, setGame] = useState(initialGame);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,8 +49,35 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
   }, [rawSlug]);
 
   useEffect(() => {
-    fetchLeaderboard(game);
-  }, [game]);
+    const controller = new AbortController();
+
+    const loadLeaderboard = async () => {
+      setLoading(true);
+      setLoadError("");
+      try {
+        const res = await fetch(`/api/public/teams?game=${game}`, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        if (!res.ok) throw new Error(`Leaderboard request failed (${res.status})`);
+
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || "Unable to load leaderboard");
+        setTeams(sortLeaderboardTeams(data.teams, game));
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          console.error(err);
+          setTeams([]);
+          setLoadError("Leaderboard is temporarily unavailable. Please try again.");
+        }
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    };
+
+    loadLeaderboard();
+    return () => controller.abort();
+  }, [game, retryCount]);
 
   const getStagePriority = (team) => {
     const tag = (team.tag || "").toLowerCase().trim();
@@ -90,21 +119,6 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
       if ((b.kills || 0) !== (a.kills || 0)) return (b.kills || 0) - (a.kills || 0);
       return (b.wins || 0) - (a.wins || 0);
     });
-  };
-
-  const fetchLeaderboard = async (currentGame) => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/public/teams?game=${currentGame}`);
-      const data = await res.json();
-      if (data.success) {
-        setTeams(sortLeaderboardTeams(data.teams, currentGame));
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleTabChange = (newGame) => {
@@ -191,9 +205,9 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
           ) : (
             <div className="space-y-4">
               <div className="bg-white/[0.02] border border-white/10 rounded-xl sm:rounded-2xl overflow-hidden">
-                <div className="w-full max-h-[70vh] overflow-auto overscroll-contain">
+                <div className="w-full overflow-x-auto">
                   <table className="w-full text-left" style={{ minWidth: "600px" }}>
-                    <thead className="sticky top-0 z-10 bg-slate-950 text-[10px] sm:text-xs uppercase tracking-wider text-slate-400 border-b border-white/10">
+                    <thead className="bg-slate-950 text-[10px] sm:text-xs uppercase tracking-wider text-slate-400 border-b border-white/10">
                       <tr>
                         <th className="w-10 sm:w-16 px-1 sm:px-4 py-2.5 sm:py-4 font-semibold text-center">Rank</th>
                         <th className="px-2 sm:px-4 py-2.5 sm:py-4 font-semibold">Team</th>
@@ -326,10 +340,24 @@ export default function GameLeaderboardPage({ params: paramsPromise }) {
                         })}
                         </Fragment>
                       ))}
-                      {teams.length === 0 && (
+                      {teams.length === 0 && !loadError && (
                         <tr>
                           <td colSpan={game === "VALORANT" ? "4" : "8"} className="px-4 py-12 sm:px-6 sm:py-16 text-center text-xs sm:text-sm text-slate-500">
                             No teams registered or ranked for this game yet.
+                          </td>
+                        </tr>
+                      )}
+                      {teams.length === 0 && loadError && (
+                        <tr>
+                          <td colSpan={game === "VALORANT" ? "4" : "8"} className="px-4 py-12 sm:px-6 sm:py-16 text-center">
+                            <p className="text-xs sm:text-sm text-red-300">{loadError}</p>
+                            <button
+                              type="button"
+                              onClick={() => setRetryCount((count) => count + 1)}
+                              className="mt-3 rounded border border-red-400/40 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-red-300 transition hover:bg-red-500/10 sm:text-xs"
+                            >
+                              Try again
+                            </button>
                           </td>
                         </tr>
                       )}
